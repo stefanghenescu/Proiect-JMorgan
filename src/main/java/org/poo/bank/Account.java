@@ -19,9 +19,22 @@ public abstract class Account {
 
     public Account(CommandInput commandInput) {
         iban = Utils.generateIBAN();
+        //Utils.resetRandom();
         balance = DEFAULT_BALANCE;
         currency = commandInput.getCurrency();
         accountType = commandInput.getAccountType();
+    }
+
+    public void addCard(Card card) {
+        cards.add(card);
+    }
+
+    public void addFunds(double amount) {
+        balance += amount;
+    }
+
+    public void deleteCard(Card card) {
+        cards.remove(card);
     }
 }
 

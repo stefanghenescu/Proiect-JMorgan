@@ -21,4 +21,15 @@ public class User {
     public void addAccount(Account account) {
         accounts.add(account);
     }
+
+    public void deleteAccount(Account account) {
+        if (account.getBalance() != 0) {
+            return;
+        }
+
+        for (Card card : account.getCards()) {
+            account.addCard(card);
+        }
+        accounts.remove(account);
+    }
 }
