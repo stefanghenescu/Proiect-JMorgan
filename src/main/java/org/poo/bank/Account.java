@@ -19,7 +19,6 @@ public abstract class Account {
 
     public Account(CommandInput commandInput) {
         iban = Utils.generateIBAN();
-        //Utils.resetRandom();
         balance = DEFAULT_BALANCE;
         currency = commandInput.getCurrency();
         accountType = commandInput.getAccountType();

@@ -8,6 +8,7 @@ import org.poo.checker.Checker;
 import org.poo.checker.CheckerConstants;
 import org.poo.fileio.CommandInput;
 import org.poo.fileio.ObjectInput;
+import org.poo.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -101,6 +102,8 @@ public final class Main {
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
         objectWriter.writeValue(new File(filePath2), output);
+
+        Utils.resetRandom();
     }
 
     /**
