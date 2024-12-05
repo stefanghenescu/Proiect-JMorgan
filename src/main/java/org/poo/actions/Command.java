@@ -77,7 +77,7 @@ public class Command {
         // transaction for later update()
     }
 
-    public static void deleteAccount(SetupBank bank, CommandInput command) {
+    public static void deleteAccount(SetupBank bank, CommandInput command, ArrayNode output) {
         // get the account to delete
         String iban = command.getAccount();
         Account account = bank.getAccounts().get(iban);
@@ -99,6 +99,8 @@ public class Command {
 
         // delete the account from the bank database
         bank.getAccounts().remove(iban);
+
+        output.add(JsonNode.eraseAccount(command, account));
 
         // transaction for later update()
     }

@@ -50,7 +50,7 @@ public class SetupBank {
                 Command.createCard(this, input);
                 break;
             case "deleteAccount":
-                Command.deleteAccount(this, input);
+                Command.deleteAccount(this, input, output);
                 break;
             case "deleteCard":
                 Command.deleteCard(this, input);

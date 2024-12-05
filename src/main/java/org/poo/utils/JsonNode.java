@@ -3,6 +3,7 @@ package org.poo.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.poo.actions.Command;
 import org.poo.bank.Account;
 import org.poo.bank.Card;
 import org.poo.bank.SetupBank;
@@ -71,5 +72,27 @@ public class JsonNode {
         cardNode.put("status", card.getStatus());
 
         return cardNode;
+    }
+
+    public static ObjectNode eraseAccount(CommandInput command, Account account) {
+        ObjectNode deleteAccount = MAPPER.createObjectNode();
+        ObjectNode output = MAPPER.createObjectNode();
+
+        deleteAccount.put("command", command.getCommand());
+
+
+        if (account.getBalance() != 0) {
+            output.put("error", "Account couldn't be deleted - see org.poo.transactions for " +
+                    "details");
+            output.put("timestamp", command.getTimestamp());
+        } else {
+            output.put("success", "Account deleted");
+            output.put("timestamp", command.getTimestamp());
+        }
+
+        deleteAccount.set("output", output);
+        deleteAccount.put("timestamp", command.getTimestamp());
+
+        return deleteAccount;
     }
 }
