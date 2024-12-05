@@ -10,13 +10,15 @@ import org.poo.fileio.ObjectInput;
 import org.poo.fileio.UserInput;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Setter
 @Getter
 public class SetupBank {
-    private Map<String, User> users = new HashMap<>();
+    private Map<String, User> users = new LinkedHashMap<>();
     private Map<String, Account> accounts = new HashMap<>();
+    private Map<String, Card> cards = new HashMap<>();
     private ExchangeRates exchangeRates = new ExchangeRates();
     private ArrayNode output;
 
@@ -41,8 +43,20 @@ public class SetupBank {
             case "addAccount":
                 Command.addAccount(this, input);
                 break;
+            case "addFunds":
+                Command.addFunds(this, input);
+                break;
+            case "createCard":
+                Command.createCard(this, input);
+                break;
+            case "deleteAccount":
+                Command.deleteAccount(this, input);
+                break;
+            case "deleteCard":
+                Command.deleteCard(this, input);
+                break;
             default:
-                throw new IllegalArgumentException("Invalid command");
+                //throw new IllegalArgumentException("Invalid command");
         }
     }
 }
