@@ -46,7 +46,7 @@ public class SetupBank {
             case "addFunds":
                 Command.addFunds(this, input);
                 break;
-            case "createCard":
+            case "createCard", "createOneTimeCard":
                 Command.createCard(this, input);
                 break;
             case "deleteAccount":
@@ -54,6 +54,15 @@ public class SetupBank {
                 break;
             case "deleteCard":
                 Command.deleteCard(this, input);
+                break;
+            case "setMinBalance":
+                Command.setMinBalance(this, input);
+                break;
+            case "payOnline":
+                Command.payOnline(this, input, output);
+                break;
+            case "sendMoney":
+                Command.sendMoney(this, input);
                 break;
             default:
                 //throw new IllegalArgumentException("Invalid command");

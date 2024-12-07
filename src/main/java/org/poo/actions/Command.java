@@ -23,7 +23,7 @@ public class Command {
 
         // get the user with the email from the command
         // add the account to that user
-        User userToAddAccount = bank.getUsers().get(userEmail);
+        User userToAddAccount = User.getUser(bank, userEmail);
         if (userToAddAccount == null)
             return;
 
@@ -37,8 +37,7 @@ public class Command {
 
     public static void addFunds(SetupBank bank, CommandInput command) {
         // get the account to add funds to
-        String iban = command.getAccount();
-        Account account = bank.getAccounts().get(iban);
+        Account account = Account.getAccount(bank, command.getAccount());
 
         if (account == null) {
             return;
@@ -50,12 +49,9 @@ public class Command {
 
     public static void createCard(SetupBank bank, CommandInput command) {
         // get the account to add the card to
-        String iban = command.getAccount();
-        Account account = bank.getAccounts().get(iban);
+        Account account = Account.getAccount(bank, command.getAccount());
 
-        String userEmail = command.getEmail();
-
-        User user = bank.getUsers().get(userEmail);
+        User user = User.getUser(bank, command.getEmail());
         if (user == null)
             return;
 
@@ -65,8 +61,12 @@ public class Command {
             //throw new IllegalArgumentException("User does not own the account");
         }
 
-        // create the card
-        Card card = new Card(account);
+        Card card;
+        if (command.getCommand().equals("createOneTimeCard")) {
+            card = new CardOneTimeUse(account);
+        } else {
+            card = new Card(account);
+        }
 
         // add the card to the account
         account.addCard(card);
@@ -79,16 +79,14 @@ public class Command {
 
     public static void deleteAccount(SetupBank bank, CommandInput command, ArrayNode output) {
         // get the account to delete
-        String iban = command.getAccount();
-        Account account = bank.getAccounts().get(iban);
+        Account account = Account.getAccount(bank, command.getAccount());
 
         if (account == null) {
             return;
         }
 
         // get the user to delete the account from
-        String userEmail = command.getEmail();
-        User user = bank.getUsers().get(userEmail);
+        User user = User.getUser(bank, command.getEmail());
 
         if (user == null) {
             return;
@@ -98,7 +96,7 @@ public class Command {
         user.deleteAccount(account);
 
         // delete the account from the bank database
-        bank.getAccounts().remove(iban);
+        bank.getAccounts().remove(account.getIban());
 
         output.add(JsonNode.eraseAccount(command, account));
 
@@ -106,9 +104,8 @@ public class Command {
     }
 
     public static void deleteCard(SetupBank bank, CommandInput command) {
-        // get the account to delete the card from
-        String cardNumber = command.getCardNumber();
-        Card card = bank.getCards().get(cardNumber);
+        // get the card to delete
+        Card card = Card.getCard(bank, command.getCardNumber());
 
         if (card == null) {
             return;
@@ -119,7 +116,64 @@ public class Command {
         ownerAccount.deleteCard(card);
 
         // delete the card from the bank database
-        bank.getCards().remove(cardNumber);
+        bank.getCards().remove(card.getNumber());
+
+        // transaction for later update()
+    }
+
+    public static void setMinBalance(SetupBank bank, CommandInput command) {
+        // get the account to set the minimum balance
+        Account account = Account.getAccount(bank, command.getAccount());
+
+        if (account == null) {
+            return;
+        }
+
+        // set the minimum balance for the account
+        account.setMinBalance(command.getAmount());
+    }
+
+    public static void payOnline(SetupBank bank, CommandInput command, ArrayNode output) {
+        Card card = Card.getCard(bank, command.getCardNumber());
+        User cardOwnerUser = User.getUser(bank, command.getEmail());
+
+        if (card == null) {
+            output.add(JsonNode.cardNotFound(command));
+            return;
+        }
+
+        Account account = card.getOwner();
+        if (!cardOwnerUser.getAccounts().contains(account)) {
+            throw new IllegalArgumentException("User does not own the account");
+        }
+
+        // convert in account currency
+        double exchangeRate = bank.getExchangeRates().getRate(command.getCurrency(), account.getCurrency());
+        double amount = command.getAmount() * exchangeRate;
+
+        card.payOnline(amount);
+        // commerciant money sent
+        // transaction for later update()
+    }
+
+    public static void sendMoney(SetupBank bank, CommandInput command) {
+        // get the account to send money from
+        Account senderAccount = Account.getAccount(bank, command.getAccount());
+        Account receiverAccount = Account.getAccount(bank, command.getReceiver());
+
+        if (senderAccount == null || receiverAccount == null) {
+            return;
+        }
+
+        // send the money
+        double amountWithdrawn = senderAccount.withdraw(command.getAmount());
+
+        // convert in receiver account currency
+        double exchangeRate = bank.getExchangeRates().getRate(senderAccount.getCurrency(),
+                receiverAccount.getCurrency());
+        double amount = amountWithdrawn * exchangeRate;
+
+        receiverAccount.addFunds(amount);
 
         // transaction for later update()
     }
