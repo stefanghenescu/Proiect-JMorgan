@@ -5,6 +5,7 @@ public class CardOneTimeUse extends Card {
         super(ownerAccount);
     }
 
+    @Override
     public void payOnline(double amount) {
         getOwner().withdraw(amount);
 
