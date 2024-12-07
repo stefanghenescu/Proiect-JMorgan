@@ -32,4 +32,8 @@ public class User {
         }
         accounts.remove(account);
     }
+
+    public static User getUser(SetupBank bank, String email) {
+        return bank.getUsers().get(email);
+    }
 }
