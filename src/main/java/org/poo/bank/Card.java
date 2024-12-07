@@ -16,4 +16,12 @@ public class Card {
         status = "active";
         owner = ownerAccount;
     }
+
+    public static Card getCard(SetupBank bank, String number) {
+        return bank.getCards().get(number);
+    }
+
+    public void payOnline(double amount) {
+        owner.withdraw(amount);
+    }
 }
