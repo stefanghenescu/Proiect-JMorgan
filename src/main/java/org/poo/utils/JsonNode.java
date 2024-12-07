@@ -95,4 +95,19 @@ public class JsonNode {
 
         return deleteAccount;
     }
+
+    public static ObjectNode cardNotFound(CommandInput command) {
+        ObjectNode errorCard = MAPPER.createObjectNode();
+        ObjectNode output = MAPPER.createObjectNode();
+
+        errorCard.put("command", command.getCommand());
+
+        output.put("timestamp", command.getTimestamp());
+        output.put("description", "Card not found");
+
+        errorCard.set("output", output);
+        errorCard.put("timestamp", command.getTimestamp());
+
+        return errorCard;
+    }
 }
