@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.bank.*;
 import org.poo.fileio.CommandInput;
+import org.poo.transactions.Transaction;
 import org.poo.utils.JsonNode;
 
 import java.util.ArrayList;
@@ -27,12 +28,20 @@ public class Command {
         if (userToAddAccount == null)
             return;
 
+        account.setOwner(userToAddAccount);
         userToAddAccount.addAccount(account);
 
         // add the account to the bank database
         bank.getAccounts().put(account.getIban(), account);
 
+        // add the account to the aliases database
+        bank.getAliases().put(account.getIban(), account.getIban());
+
         // transaction for later update()
+        Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
+                                                                "New account created")
+                .build();
+        userToAddAccount.addTransaction(transaction);
     }
 
     public static void addFunds(SetupBank bank, CommandInput command) {
@@ -75,11 +84,21 @@ public class Command {
         bank.getCards().put(card.getNumber(), card);
 
         // transaction for later update()
+        Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
+                                                                "New card created")
+                .card(card.getNumber())
+                .cardHolder(user.getEmail())
+                .account(account.getIban())
+                .build();
+
+        user.addTransaction(transaction);
     }
 
     public static void deleteAccount(SetupBank bank, CommandInput command, ArrayNode output) {
+        String accountIBAN = bank.getAliases().get(command.getAccount());
+
         // get the account to delete
-        Account account = Account.getAccount(bank, command.getAccount());
+        Account account = Account.getAccount(bank, accountIBAN);
 
         if (account == null) {
             return;
@@ -93,10 +112,10 @@ public class Command {
         }
 
         // delete the account from the user
-        user.deleteAccount(account);
-
-        // delete the account from the bank database
-        bank.getAccounts().remove(account.getIban());
+        if (user.deleteAccount(account)) {
+            // delete the account from the bank database
+            bank.getAccounts().remove(account.getIban());
+        }
 
         output.add(JsonNode.eraseAccount(command, account));
 
@@ -119,11 +138,21 @@ public class Command {
         bank.getCards().remove(card.getNumber());
 
         // transaction for later update()
+        Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
+                                                                "The card has been destroyed")
+                .card(card.getNumber())
+                .cardHolder(ownerAccount.getOwner().getEmail())
+                .account(ownerAccount.getIban())
+                .build();
+
+        ownerAccount.getOwner().addTransaction(transaction);
     }
 
     public static void setMinBalance(SetupBank bank, CommandInput command) {
+        String accountIBAN = bank.getAliases().get(command.getAccount());
+
         // get the account to set the minimum balance
-        Account account = Account.getAccount(bank, command.getAccount());
+        Account account = Account.getAccount(bank, accountIBAN);
 
         if (account == null) {
             return;
@@ -144,22 +173,24 @@ public class Command {
 
         Account account = card.getOwner();
         if (!cardOwnerUser.getAccounts().contains(account)) {
-            throw new IllegalArgumentException("User does not own the account");
+            return;
+            //throw new IllegalArgumentException("User does not own the account");
         }
 
         // convert in account currency
         double exchangeRate = bank.getExchangeRates().getRate(command.getCurrency(), account.getCurrency());
         double amount = command.getAmount() * exchangeRate;
 
-        card.payOnline(amount);
+        card.payOnline(amount, command.getTimestamp(), command.getCommerciant());
         // commerciant money sent
-        // transaction for later update()
     }
 
     public static void sendMoney(SetupBank bank, CommandInput command) {
         // get the account to send money from
+        String receiverAccountIBAN = bank.getAliases().get(command.getReceiver());
+
         Account senderAccount = Account.getAccount(bank, command.getAccount());
-        Account receiverAccount = Account.getAccount(bank, command.getReceiver());
+        Account receiverAccount = Account.getAccount(bank, receiverAccountIBAN);
 
         if (senderAccount == null || receiverAccount == null) {
             return;
@@ -175,6 +206,23 @@ public class Command {
 
         receiverAccount.addFunds(amount);
 
-        // transaction for later update()
+        Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
+                                                                    command.getDescription())
+                .senderIBAN(senderAccount.getIban())
+                .receiverIBAN(receiverAccount.getIban())
+                .amountString(amountWithdrawn + " " + senderAccount.getCurrency())
+                .transferType("sent")
+                .build();
+        senderAccount.getOwner().addTransaction(transaction);
+    }
+
+    public static void printTransactions(SetupBank bank, CommandInput command, ArrayNode output) {
+        User transactionsUser = User.getUser(bank, command.getEmail());
+        ObjectNode transactionsArray = JsonNode.writeTransactions(command, bank, transactionsUser);
+        output.add(transactionsArray);
+    }
+
+    public static void setAlias(SetupBank bank, CommandInput command) {
+        bank.getAliases().put(command.getAlias(), command.getAccount());
     }
 }
