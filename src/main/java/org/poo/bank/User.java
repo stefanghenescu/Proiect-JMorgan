@@ -2,8 +2,10 @@ package org.poo.bank;
 
 import lombok.Getter;
 import org.poo.fileio.UserInput;
+import org.poo.transactions.Transaction;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class User {
@@ -11,6 +13,7 @@ public class User {
     private String lastName;
     private String email;
     private ArrayList<Account> accounts = new ArrayList<>();
+    private List<Transaction> transactions = new ArrayList<>();
 
     public User(UserInput userInput) {
         firstName = userInput.getFirstName();
@@ -22,15 +25,20 @@ public class User {
         accounts.add(account);
     }
 
-    public void deleteAccount(Account account) {
+    public boolean deleteAccount(Account account) {
         if (account.getBalance() != 0) {
-            return;
+            return false;
         }
 
         for (Card card : account.getCards()) {
-            account.addCard(card);
+            account.deleteCard(card);
         }
         accounts.remove(account);
+        return true;
+    }
+
+    public void addTransaction(Transaction transaction) {
+        transactions.add(transaction);
     }
 
     public static User getUser(SetupBank bank, String email) {
