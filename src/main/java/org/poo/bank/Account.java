@@ -44,9 +44,7 @@ public abstract class Account {
 
     public double withdraw(double amount) {
         if (balance - amount < minBalance) {
-            // update() transactions with an error message
             return 0;
-            //throw new IllegalArgumentException("Not enough funds");
         }
         balance -= amount;
         return amount;
