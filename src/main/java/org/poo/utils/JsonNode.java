@@ -9,6 +9,7 @@ import org.poo.bank.Card;
 import org.poo.bank.SetupBank;
 import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
+import org.poo.transactions.Transaction;
 
 public class JsonNode {
     public static final ObjectMapper MAPPER = new ObjectMapper();
@@ -109,5 +110,29 @@ public class JsonNode {
         errorCard.put("timestamp", command.getTimestamp());
 
         return errorCard;
+    }
+
+    public static ObjectNode writeTransactions(CommandInput commandInput,  SetupBank bank,
+                                               User user) {
+        ObjectNode transactionsOutput = MAPPER.createObjectNode();
+
+        transactionsOutput.put("command", commandInput.getCommand());
+
+        ArrayNode transactionsArray = MAPPER.createArrayNode();
+
+        for (Transaction transaction : user.getTransactions()) {
+            ObjectNode transactionJson = writeTransaction(transaction);
+            transactionsArray.add(transactionJson);
+        }
+
+        transactionsOutput.set("output", transactionsArray);
+        transactionsOutput.put("timestamp", commandInput.getTimestamp());
+
+        return  transactionsOutput;
+    }
+
+    public static ObjectNode writeTransaction(Transaction transaction) {
+
+        return MAPPER.valueToTree(transaction);
     }
 }
