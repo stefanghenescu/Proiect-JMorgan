@@ -8,10 +8,9 @@ import org.poo.fileio.CommandInput;
 import org.poo.fileio.ExchangeInput;
 import org.poo.fileio.ObjectInput;
 import org.poo.fileio.UserInput;
+import org.poo.transactions.Transaction;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 @Setter
 @Getter
@@ -20,6 +19,7 @@ public class SetupBank {
     private Map<String, Account> accounts = new HashMap<>();
     private Map<String, Card> cards = new HashMap<>();
     private ExchangeRates exchangeRates = new ExchangeRates();
+    private Map<String, String> aliases = new HashMap<>();
     private ArrayNode output;
 
     public SetupBank(ObjectInput input, ArrayNode output) {
@@ -63,6 +63,12 @@ public class SetupBank {
                 break;
             case "sendMoney":
                 Command.sendMoney(this, input);
+                break;
+            case "printTransactions":
+                Command.printTransactions(this, input, output);
+                break;
+            case "setAlias":
+                Command.setAlias(this, input);
                 break;
             default:
                 //throw new IllegalArgumentException("Invalid command");
