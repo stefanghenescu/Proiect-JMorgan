@@ -1,7 +1,10 @@
-package org.poo.bank;
+package org.poo.account;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.poo.bank.Card;
+import org.poo.bank.SetupBank;
+import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.Utils;
 
@@ -56,22 +59,5 @@ public abstract class Account {
         }
         return true;
     }
-}
-
-class ClassicAccount extends Account {
-    public ClassicAccount(CommandInput commandInput) {
-        super(commandInput);
-    }
-}
-
-@Getter
-class SavingsAccount extends Account {
-    private double interestRate;
-
-    public SavingsAccount(CommandInput commandInput) {
-        super(commandInput);
-        interestRate = commandInput.getInterestRate();
-    }
-
 }
 
