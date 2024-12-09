@@ -6,6 +6,7 @@ import org.poo.bank.Card;
 import org.poo.bank.SetupBank;
 import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
+import org.poo.transactions.Transaction;
 import org.poo.utils.Utils;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public abstract class Account {
     private String accountType;
     private ArrayList<Card> cards = new ArrayList<>();
     private User owner;
+    private ArrayList<Transaction> transactions = new ArrayList<>();
 
     public Account(CommandInput commandInput) {
         iban = Utils.generateIBAN();
@@ -58,6 +60,10 @@ public abstract class Account {
             return false;
         }
         return true;
+    }
+
+    public void addTransaction(Transaction transaction) {
+        transactions.add(transaction);
     }
 }
 
