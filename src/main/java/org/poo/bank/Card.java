@@ -24,7 +24,7 @@ public class Card {
         return bank.getCards().get(number);
     }
 
-    public void payOnline(double amount, long timestamp, String commerciant) {
+    public boolean payOnline(double amount, long timestamp, String commerciant) {
         Transaction transaction;
         if (status.equals("frozen")) {
             // add transaction with an error message
@@ -45,6 +45,9 @@ public class Card {
         }
 
         owner.getOwner().addTransaction(transaction);
+        owner.addTransaction(transaction);
+
+        return false;
     }
 
     public void check(long timestamp) {
@@ -62,6 +65,7 @@ public class Card {
                 .build();
 
         owner.getOwner().addTransaction(transaction);
+        owner.addTransaction(transaction);
     }
 
     private void warning() {

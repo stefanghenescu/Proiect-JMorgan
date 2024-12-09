@@ -1,6 +1,7 @@
 package org.poo.bank;
 
 import org.poo.account.Account;
+import org.poo.actions.Command;
 import org.poo.transactions.Transaction;
 import org.poo.utils.Utils;
 
@@ -11,8 +12,9 @@ public class CardOneTimeUse extends Card {
     }
 
     @Override
-    public void payOnline(double amount, long timestamp, String commerciant) {
+    public boolean payOnline(double amount, long timestamp, String commerciant) {
         Transaction transaction;
+        boolean statusPayment = false;
         if (getStatus().equals("frozen")) {
             // add transaction with an error message
             transaction = new Transaction.TransactionBuilder(timestamp,
@@ -29,13 +31,16 @@ public class CardOneTimeUse extends Card {
                     .amount(amount)
                     .commerciant(commerciant)
                     .build();
-
-            // new card is generated
-            setNumber(Utils.generateCardNumber());
+            statusPayment = true;
         }
 
         // add transaction to the owner of the account that owns the card :)
         getOwner().getOwner().addTransaction(transaction);
+
+        // add transaction to the account
+        getOwner().addTransaction(transaction);
+
+        return statusPayment;
     }
 
     public void check(long timestamp) {
@@ -54,6 +59,9 @@ public class CardOneTimeUse extends Card {
 
         // add transaction to the owner of the account that owns the card :)
         getOwner().getOwner().addTransaction(transaction);
+
+        // add transaction to the account
+        getOwner().addTransaction(transaction);
     }
 
     private void warning() {
