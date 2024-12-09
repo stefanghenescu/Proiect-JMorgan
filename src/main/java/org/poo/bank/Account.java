@@ -43,11 +43,18 @@ public abstract class Account {
     }
 
     public double withdraw(double amount) {
-        if (balance - amount < minBalance) {
+        if (balance - amount <= minBalance) {
             return 0;
         }
         balance -= amount;
         return amount;
+    }
+
+    public boolean checkEnoughMoney(double amount) {
+        if (balance - amount <= minBalance) {
+            return false;
+        }
+        return true;
     }
 }
 
