@@ -73,6 +73,9 @@ public class SetupBank {
             case "checkCardStatus":
                 Command.checkCardStatus(this, input, output);
                 break;
+            case "splitPayment":
+                Command.splitPayment(this, input, output);
+                break;
             default:
                 //throw new IllegalArgumentException("Invalid command");
         }
