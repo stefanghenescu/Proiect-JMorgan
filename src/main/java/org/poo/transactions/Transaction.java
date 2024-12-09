@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -20,6 +22,8 @@ public class Transaction {
     private final String receiverIBAN;
     private final String transferType;
     private final String commerciant;
+    private final String currency;
+    private final List<String> involvedAccounts;
 
     @JsonIgnore
     private final Double amount;
@@ -38,6 +42,8 @@ public class Transaction {
         this.amountString = builder.amountString;
         this.transferType = builder.transferType;
         this.commerciant = builder.commerciant;
+        this.currency = builder.currency;
+        this.involvedAccounts = builder.involvedAccounts;
     }
 
     @JsonProperty("amount")
@@ -63,6 +69,8 @@ public class Transaction {
         private String amountString;
         private String transferType;
         private String commerciant;
+        private String currency;
+        private List<String> involvedAccounts;
 
         public TransactionBuilder(long timestamp, String description) {
             this.timestamp = timestamp;
@@ -111,6 +119,16 @@ public class Transaction {
 
         public TransactionBuilder commerciant(String commerciant) {
             this.commerciant = commerciant;
+            return this;
+        }
+
+        public TransactionBuilder currency(String currency) {
+            this.currency = currency;
+            return this;
+        }
+
+        public TransactionBuilder involvedAccounts(List<String> involvedAccounts) {
+            this.involvedAccounts = involvedAccounts;
             return this;
         }
 
