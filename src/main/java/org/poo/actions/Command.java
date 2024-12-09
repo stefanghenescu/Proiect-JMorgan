@@ -231,6 +231,7 @@ public class Command {
         receiverAccount.addFunds(amount);
 
         Transaction transactionSender;
+        Transaction transactionReceiver = null;
 
         if (amountWithdrawn == 0) {
             // add transaction with an error message
@@ -246,7 +247,7 @@ public class Command {
                     .transferType("sent")
                     .build();
 
-            Transaction transactionReceiver =
+            transactionReceiver =
                     new Transaction.TransactionBuilder(command.getTimestamp(),
                     command.getDescription())
                     .senderIBAN(senderAccount.getIban())
@@ -255,11 +256,14 @@ public class Command {
                     .transferType("received")
                     .build();
 
-            receiverAccount.getOwner().addTransaction(transactionReceiver);
-            receiverAccount.addTransaction(transactionReceiver);
         }
         senderAccount.getOwner().addTransaction(transactionSender);
         senderAccount.addTransaction(transactionSender);
+
+        if (transactionReceiver != null) {
+            receiverAccount.getOwner().addTransaction(transactionReceiver);
+            receiverAccount.addTransaction(transactionReceiver);
+        }
     }
 
     public static void printTransactions(SetupBank bank, CommandInput command, ArrayNode output) {
@@ -354,8 +358,7 @@ public class Command {
         ((SavingsAccount) account).setInterestRate(command.getInterestRate());
 
             Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
-                    "Interest rate changed")
-                    .account(account.getIban())
+                    "Interest rate of the account changed to " + command.getInterestRate())
                     .build();
 
         account.getOwner().addTransaction(transaction);
