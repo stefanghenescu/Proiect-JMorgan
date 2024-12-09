@@ -70,6 +70,9 @@ public class SetupBank {
             case "setAlias":
                 Command.setAlias(this, input);
                 break;
+            case "checkCardStatus":
+                Command.checkCardStatus(this, input, output);
+                break;
             default:
                 //throw new IllegalArgumentException("Invalid command");
         }

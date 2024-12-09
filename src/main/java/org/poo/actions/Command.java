@@ -225,4 +225,9 @@ public class Command {
     public static void setAlias(SetupBank bank, CommandInput command) {
         bank.getAliases().put(command.getAlias(), command.getAccount());
     }
+
+    public static void checkCardStatus(SetupBank bank, CommandInput command, ArrayNode output) {
+        Card card = Card.getCard(bank, command.getCardNumber());
+
+    }
 }
