@@ -24,6 +24,7 @@ public class Transaction {
     private final String commerciant;
     private final String currency;
     private final List<String> involvedAccounts;
+    private final String error;
 
     @JsonIgnore
     private final Double amount;
@@ -44,6 +45,7 @@ public class Transaction {
         this.commerciant = builder.commerciant;
         this.currency = builder.currency;
         this.involvedAccounts = builder.involvedAccounts;
+        this.error = builder.error;
     }
 
     @JsonProperty("amount")
@@ -71,6 +73,7 @@ public class Transaction {
         private String commerciant;
         private String currency;
         private List<String> involvedAccounts;
+        private String error;
 
         public TransactionBuilder(long timestamp, String description) {
             this.timestamp = timestamp;
@@ -129,6 +132,11 @@ public class Transaction {
 
         public TransactionBuilder involvedAccounts(List<String> involvedAccounts) {
             this.involvedAccounts = involvedAccounts;
+            return this;
+        }
+
+        public TransactionBuilder error(String error) {
+            this.error = error;
             return this;
         }
 
