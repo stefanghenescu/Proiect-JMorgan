@@ -4,6 +4,7 @@ import org.poo.transactions.Transaction;
 import org.poo.utils.Utils;
 
 public class CardOneTimeUse extends Card {
+    private static final int DIF_BALANCE = 30;
     public CardOneTimeUse(Account ownerAccount) {
         super(ownerAccount);
     }
@@ -32,8 +33,29 @@ public class CardOneTimeUse extends Card {
             setNumber(Utils.generateCardNumber());
         }
 
-        // add transaction to the owner of the account that owns the card :))
+        // add transaction to the owner of the account that owns the card :)
         getOwner().getOwner().addTransaction(transaction);
+    }
 
+    public void check(long timestamp) {
+        if (getOwner().getBalance() <= getOwner().getMinBalance()) {
+            freeze(timestamp);
+        } else if (getOwner().getBalance() - getOwner().getMinBalance() <= DIF_BALANCE) {
+            warning();
+        }
+    }
+
+    private void freeze(long timestamp) {
+        setStatus("frozen");
+        Transaction transaction = new Transaction.TransactionBuilder(timestamp,
+                "You have reached the minimum amount of funds, the card will be frozen")
+                .build();
+
+        // add transaction to the owner of the account that owns the card :)
+        getOwner().getOwner().addTransaction(transaction);
+    }
+
+    private void warning() {
+        setStatus("warning");
     }
 }

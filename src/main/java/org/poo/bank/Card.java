@@ -8,6 +8,7 @@ import org.poo.utils.Utils;
 @Setter
 @Getter
 public class Card {
+    private static final int DIF_BALANCE = 30;
     private String status;
     private String number;
     private Account owner;
@@ -43,5 +44,26 @@ public class Card {
         }
 
         owner.getOwner().addTransaction(transaction);
+    }
+
+    public void check(long timestamp) {
+        if (owner.getBalance() <= owner.getMinBalance()) {
+            freeze(timestamp);
+        } else if (owner.getBalance() - owner.getMinBalance() <= DIF_BALANCE) {
+            warning();
+        }
+    }
+
+    private void freeze(long timestamp) {
+        status = "frozen";
+        Transaction transaction = new Transaction.TransactionBuilder(timestamp,
+                "You have reached the minimum amount of funds, the card will be frozen")
+                .build();
+
+        owner.getOwner().addTransaction(transaction);
+    }
+
+    private void warning() {
+        status = "warning";
     }
 }
