@@ -2,12 +2,13 @@ package org.poo.actions;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.poo.account.Account;
+import org.poo.account.AccountFactory;
+import org.poo.account.SavingsAccount;
 import org.poo.bank.*;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
 import org.poo.utils.JsonNode;
-
-import java.util.ArrayList;
 
 public class Command {
     public static void printUsers (SetupBank bank, CommandInput command, ArrayNode output) {
@@ -291,4 +292,33 @@ public class Command {
             }
         }
     }
+
+    public static void addInteres(SetupBank bank, CommandInput command) {
+        Account account = bank.getAccounts().get(command.getAccount());
+        if (account == null || !account.getAccountType().equals("saving")) {
+            return;
+        }
+
+        double interestRate = ((SavingsAccount) account).getInterestRate();
+        double interest = account.getBalance() * interestRate;
+
+        account.addFunds(interest);
+    }
+
+    public static void changeInterestRate(SetupBank bank, CommandInput command) {
+        Account account = bank.getAccounts().get(command.getAccount());
+        if (account == null || !account.getAccountType().equals("saving")) {
+            return;
+        }
+
+        ((SavingsAccount) account).setInterestRate(command.getInterestRate());
+
+        Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
+                "Interest rate changed")
+                .account(account.getIban())
+                .build();
+
+        account.getOwner().addTransaction(transaction);
+    }
 }
+

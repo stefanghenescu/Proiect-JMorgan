@@ -3,12 +3,12 @@ package org.poo.bank;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.Getter;
 import lombok.Setter;
+import org.poo.account.Account;
 import org.poo.actions.Command;
 import org.poo.fileio.CommandInput;
 import org.poo.fileio.ExchangeInput;
 import org.poo.fileio.ObjectInput;
 import org.poo.fileio.UserInput;
-import org.poo.transactions.Transaction;
 
 import java.util.*;
 
@@ -75,6 +75,12 @@ public class SetupBank {
                 break;
             case "splitPayment":
                 Command.splitPayment(this, input, output);
+                break;
+            case "addInteres":
+                Command.addInteres(this, input);
+                break;
+            case "changeInterestRate":
+                Command.changeInterestRate(this, input);
                 break;
             default:
                 //throw new IllegalArgumentException("Invalid command");
