@@ -7,12 +7,16 @@ import org.poo.account.AccountFactory;
 import org.poo.account.SavingsAccount;
 import org.poo.bank.*;
 import org.poo.fileio.CommandInput;
+import org.poo.reports.ReportFactory;
+import org.poo.reports.ReportStrategy;
 import org.poo.transactions.Transaction;
-import org.poo.utils.JsonNode;
+import org.poo.utils.JsonOutput;
+
+import javax.swing.*;
 
 public class Command {
     public static void printUsers (SetupBank bank, CommandInput command, ArrayNode output) {
-        ObjectNode usersArray = JsonNode.writeUsers(command, bank);
+        ObjectNode usersArray = JsonOutput.writeUsers(command, bank);
         output.add(usersArray);
     }
 
@@ -43,6 +47,7 @@ public class Command {
                                                                 "New account created")
                 .build();
         userToAddAccount.addTransaction(transaction);
+        account.addTransaction(transaction);
     }
 
     public static void addFunds(SetupBank bank, CommandInput command) {
@@ -93,6 +98,7 @@ public class Command {
                 .build();
 
         user.addTransaction(transaction);
+        account.addTransaction(transaction);
     }
 
     public static void deleteAccount(SetupBank bank, CommandInput command, ArrayNode output) {
@@ -116,11 +122,16 @@ public class Command {
         if (user.deleteAccount(account)) {
             // delete the account from the bank database
             bank.getAccounts().remove(account.getIban());
+        } else {
+            // update transactions with an error message
+            Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
+                    "Account couldn't be deleted - there are funds remaining")
+                    .build();
+
+            user.addTransaction(transaction);
         }
 
-        output.add(JsonNode.eraseAccount(command, account));
-
-        // transaction for later update()
+        output.add(JsonOutput.eraseAccount(command, account));
     }
 
     public static void deleteCard(SetupBank bank, CommandInput command) {
@@ -147,6 +158,7 @@ public class Command {
                 .build();
 
         ownerAccount.getOwner().addTransaction(transaction);
+        ownerAccount.addTransaction(transaction);
     }
 
     public static void setMinBalance(SetupBank bank, CommandInput command) {
@@ -168,22 +180,33 @@ public class Command {
         User cardOwnerUser = User.getUser(bank, command.getEmail());
 
         if (card == null) {
-            output.add(JsonNode.cardNotFound(command));
+            output.add(JsonOutput.cardNotFound(command));
             return;
         }
 
-        Account account = card.getOwner();
-        if (!cardOwnerUser.getAccounts().contains(account)) {
+        Account cardAccount = card.getOwner();
+        if (cardOwnerUser == null || !cardOwnerUser.getAccounts().contains(cardAccount)) {
+            output.add(JsonOutput.cardNotFound(command));
             return;
-            //throw new IllegalArgumentException("User does not own the account");
         }
 
         // convert in account currency
-        double exchangeRate = bank.getExchangeRates().getRate(command.getCurrency(), account.getCurrency());
+        double exchangeRate = bank.getExchangeRates().getRate(command.getCurrency(),
+                cardAccount.getCurrency());
         double amount = command.getAmount() * exchangeRate;
 
-        card.payOnline(amount, command.getTimestamp(), command.getCommerciant());
-        // commerciant money sent
+        boolean paidWithOneTimeCard = card.payOnline(amount, command.getTimestamp(),
+                command.getCommerciant());
+
+        if (paidWithOneTimeCard) {
+            // delete the card
+            Command.deleteCard(bank, command);
+
+            // create a new one-time card
+            command.setCommand("createOneTimeCard");
+            command.setAccount(cardAccount.getIban());
+            Command.createCard(bank, command);
+        }
     }
 
     public static void sendMoney(SetupBank bank, CommandInput command) {
@@ -207,28 +230,41 @@ public class Command {
 
         receiverAccount.addFunds(amount);
 
-        Transaction transaction;
+        Transaction transactionSender;
 
         if (amountWithdrawn == 0) {
             // add transaction with an error message
-            transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
+            transactionSender = new Transaction.TransactionBuilder(command.getTimestamp(),
                     "Insufficient funds")
                     .build();
         } else {
-            transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
+            transactionSender = new Transaction.TransactionBuilder(command.getTimestamp(),
                     command.getDescription())
                     .senderIBAN(senderAccount.getIban())
                     .receiverIBAN(receiverAccount.getIban())
                     .amountString(amountWithdrawn + " " + senderAccount.getCurrency())
                     .transferType("sent")
                     .build();
+
+            Transaction transactionReceiver =
+                    new Transaction.TransactionBuilder(command.getTimestamp(),
+                    command.getDescription())
+                    .senderIBAN(senderAccount.getIban())
+                    .receiverIBAN(receiverAccount.getIban())
+                    .amountString(amount + " " + receiverAccount.getCurrency())
+                    .transferType("received")
+                    .build();
+
+            receiverAccount.getOwner().addTransaction(transactionReceiver);
+            receiverAccount.addTransaction(transactionReceiver);
         }
-        senderAccount.getOwner().addTransaction(transaction);
+        senderAccount.getOwner().addTransaction(transactionSender);
+        senderAccount.addTransaction(transactionSender);
     }
 
     public static void printTransactions(SetupBank bank, CommandInput command, ArrayNode output) {
         User transactionsUser = User.getUser(bank, command.getEmail());
-        ObjectNode transactionsArray = JsonNode.writeTransactions(command, bank, transactionsUser);
+        ObjectNode transactionsArray = JsonOutput.writeTransactions(command, bank, transactionsUser);
         output.add(transactionsArray);
     }
 
@@ -240,7 +276,7 @@ public class Command {
         Card card = Card.getCard(bank, command.getCardNumber());
 
         if (card == null) {
-            output.add(JsonNode.cardNotFound(command));
+            output.add(JsonOutput.cardNotFound(command));
             return;
         }
 
@@ -250,8 +286,10 @@ public class Command {
     public static void splitPayment(SetupBank bank, CommandInput command, ArrayNode output) {
         double amountPerPerson = command.getAmount() / command.getAccounts().size();
         boolean everyonePaid = true;
+        Transaction transaction;
+        String error = null;
 
-        for (String accountIBAN : command.getAccounts()) {
+        for (String accountIBAN : command.getAccounts().reversed()) {
             Account account = Account.getAccount(bank, accountIBAN);
 
             if (account == null) {
@@ -262,40 +300,41 @@ public class Command {
             everyonePaid = account.checkEnoughMoney(amountPerPerson * exchangeRate);
 
             if (!everyonePaid) {
-               break;
+                error = "Account " + accountIBAN + " has insufficient funds for a split payment.";
+                break;
             }
         }
 
-        Transaction transaction;
         if (everyonePaid) {
-            transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
-                    // i do like this as ref has amount with 2 decimals evan if it is an int
-                    // (1269.00 EUR)
-                    String.format("Split payment of %.2f %s", command.getAmount(), command.getCurrency()))
-                    .currency(command.getCurrency())
-                    .amount(amountPerPerson)
-                    .involvedAccounts(command.getAccounts())
-                    .build();
             for (String accountIBAN : command.getAccounts()) {
                 Account account = Account.getAccount(bank, accountIBAN);
                 double exchangeRate = bank.getExchangeRates().getRate(command.getCurrency(), account.getCurrency());
                 account.withdraw(amountPerPerson * exchangeRate);
-                account.getOwner().addTransaction(transaction);
             }
-        } else {
-            transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
-                    "Insufficient funds")
-                    .build();
-            for (String accountIBAN : command.getAccounts()) {
-                Account account = Account.getAccount(bank, accountIBAN);
-                account.getOwner().addTransaction(transaction);
-            }
+        }
+
+        // add transactions for each account
+        transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
+                // i do like this as ref has amount with 2 decimals evan if it is an int
+                // (1269.00 EUR)
+                String.format("Split payment of %.2f %s", command.getAmount(), command.getCurrency()))
+                .error(error)
+                .currency(command.getCurrency())
+                .amount(amountPerPerson)
+                .involvedAccounts(command.getAccounts())
+                .build();
+
+        for (String accountIBAN : command.getAccounts()) {
+            Account account = Account.getAccount(bank, accountIBAN);
+            account.getOwner().addTransaction(transaction);
+            account.addTransaction(transaction);
         }
     }
 
-    public static void addInteres(SetupBank bank, CommandInput command) {
+    public static void addInterest(SetupBank bank, CommandInput command, ArrayNode output) {
         Account account = bank.getAccounts().get(command.getAccount());
-        if (account == null || !account.getAccountType().equals("saving")) {
+        if (!account.getAccountType().equals("savings")) {
+            output.add(JsonOutput.writeErrorSavingAccount(command));
             return;
         }
 
@@ -305,20 +344,30 @@ public class Command {
         account.addFunds(interest);
     }
 
-    public static void changeInterestRate(SetupBank bank, CommandInput command) {
+    public static void changeInterestRate(SetupBank bank, CommandInput command, ArrayNode output) {
         Account account = bank.getAccounts().get(command.getAccount());
-        if (account == null || !account.getAccountType().equals("saving")) {
+        if (!account.getAccountType().equals("savings")) {
+            output.add(JsonOutput.writeErrorSavingAccount(command));
             return;
         }
 
         ((SavingsAccount) account).setInterestRate(command.getInterestRate());
 
-        Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
-                "Interest rate changed")
-                .account(account.getIban())
-                .build();
+            Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
+                    "Interest rate changed")
+                    .account(account.getIban())
+                    .build();
 
         account.getOwner().addTransaction(transaction);
+        account.addTransaction(transaction);
+    }
+
+    public static void makeReport(SetupBank bank, CommandInput command, ArrayNode output) {
+        ReportStrategy reportStrategy = ReportFactory.getReportType(command.getCommand());
+        reportStrategy.generateReport(bank, command);
+
+        ObjectNode report = reportStrategy.generateReport(bank, command);
+        output.add(report);
     }
 }
 

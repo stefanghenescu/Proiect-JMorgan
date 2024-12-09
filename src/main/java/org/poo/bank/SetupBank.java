@@ -5,11 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.poo.account.Account;
 import org.poo.actions.Command;
-import org.poo.fileio.CommandInput;
-import org.poo.fileio.ExchangeInput;
-import org.poo.fileio.ObjectInput;
-import org.poo.fileio.UserInput;
+import org.poo.fileio.*;
 
+import javax.management.monitor.StringMonitor;
 import java.util.*;
 
 @Setter
@@ -76,11 +74,14 @@ public class SetupBank {
             case "splitPayment":
                 Command.splitPayment(this, input, output);
                 break;
-            case "addInteres":
-                Command.addInteres(this, input);
+            case "addInterest":
+                Command.addInterest(this, input, output);
                 break;
             case "changeInterestRate":
-                Command.changeInterestRate(this, input);
+                Command.changeInterestRate(this, input, output);
+                break;
+            case "report", "spendingsReport":
+                Command.makeReport(this, input, output);
                 break;
             default:
                 //throw new IllegalArgumentException("Invalid command");
