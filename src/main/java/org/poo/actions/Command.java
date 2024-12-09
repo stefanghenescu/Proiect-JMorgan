@@ -206,13 +206,22 @@ public class Command {
 
         receiverAccount.addFunds(amount);
 
-        Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
-                                                                    command.getDescription())
-                .senderIBAN(senderAccount.getIban())
-                .receiverIBAN(receiverAccount.getIban())
-                .amountString(amountWithdrawn + " " + senderAccount.getCurrency())
-                .transferType("sent")
-                .build();
+        Transaction transaction;
+
+        if (amountWithdrawn == 0) {
+            // add transaction with an error message
+            transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
+                    "Insufficient funds")
+                    .build();
+        } else {
+            transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
+                    command.getDescription())
+                    .senderIBAN(senderAccount.getIban())
+                    .receiverIBAN(receiverAccount.getIban())
+                    .amountString(amountWithdrawn + " " + senderAccount.getCurrency())
+                    .transferType("sent")
+                    .build();
+        }
         senderAccount.getOwner().addTransaction(transaction);
     }
 
@@ -229,5 +238,57 @@ public class Command {
     public static void checkCardStatus(SetupBank bank, CommandInput command, ArrayNode output) {
         Card card = Card.getCard(bank, command.getCardNumber());
 
+        if (card == null) {
+            output.add(JsonNode.cardNotFound(command));
+            return;
+        }
+
+        card.check(command.getTimestamp());
+    }
+
+    public static void splitPayment(SetupBank bank, CommandInput command, ArrayNode output) {
+        double amountPerPerson = command.getAmount() / command.getAccounts().size();
+        boolean everyonePaid = true;
+
+        for (String accountIBAN : command.getAccounts()) {
+            Account account = Account.getAccount(bank, accountIBAN);
+
+            if (account == null) {
+                return;
+            }
+
+            double exchangeRate = bank.getExchangeRates().getRate(command.getCurrency(), account.getCurrency());
+            everyonePaid = account.checkEnoughMoney(amountPerPerson * exchangeRate);
+
+            if (!everyonePaid) {
+               break;
+            }
+        }
+
+        Transaction transaction;
+        if (everyonePaid) {
+            transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
+                    // i do like this as ref has amount with 2 decimals evan if it is an int
+                    // (1269.00 EUR)
+                    String.format("Split payment of %.2f %s", command.getAmount(), command.getCurrency()))
+                    .currency(command.getCurrency())
+                    .amount(amountPerPerson)
+                    .involvedAccounts(command.getAccounts())
+                    .build();
+            for (String accountIBAN : command.getAccounts()) {
+                Account account = Account.getAccount(bank, accountIBAN);
+                double exchangeRate = bank.getExchangeRates().getRate(command.getCurrency(), account.getCurrency());
+                account.withdraw(amountPerPerson * exchangeRate);
+                account.getOwner().addTransaction(transaction);
+            }
+        } else {
+            transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
+                    "Insufficient funds")
+                    .build();
+            for (String accountIBAN : command.getAccounts()) {
+                Account account = Account.getAccount(bank, accountIBAN);
+                account.getOwner().addTransaction(transaction);
+            }
+        }
     }
 }
