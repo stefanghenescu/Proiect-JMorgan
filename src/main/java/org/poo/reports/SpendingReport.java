@@ -14,8 +14,13 @@ public class SpendingReport implements ReportStrategy {
     @Override
     public ObjectNode generateReport(SetupBank bank, CommandInput command) {
         Account account = bank.getAccounts().get(command.getAccount());
+
         if (account == null) {
             return JsonOutput.accountNotFound(command);
+        }
+
+        if (account.getAccountType().equals("savings")) {
+            return JsonOutput.accountNotEligible(command);
         }
 
         List<Transaction> transactions = new ArrayList<>();

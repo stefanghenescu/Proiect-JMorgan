@@ -229,4 +229,18 @@ public class JsonOutput {
 
         return report;
     }
+
+    public static ObjectNode accountNotEligible(CommandInput command) {
+        ObjectNode errorAccount = MAPPER.createObjectNode();
+        ObjectNode output = MAPPER.createObjectNode();
+
+        errorAccount.put("command", command.getCommand());
+
+        output.put("error", "This kind of report is not supported for a saving account");
+
+        errorAccount.set("output", output);
+        errorAccount.put("timestamp", command.getTimestamp());
+
+        return errorAccount;
+    }
 }
