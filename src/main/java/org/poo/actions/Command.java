@@ -228,6 +228,8 @@ public class Command {
                 receiverAccount.getCurrency());
         double amount = amountWithdrawn * exchangeRate;
 
+        double amountRounded = Math.round(amount * 10000.0) / 10000.0;
+
         receiverAccount.addFunds(amount);
 
         Transaction transactionSender;
@@ -247,12 +249,11 @@ public class Command {
                     .transferType("sent")
                     .build();
 
-            transactionReceiver =
-                    new Transaction.TransactionBuilder(command.getTimestamp(),
+            transactionReceiver = new Transaction.TransactionBuilder(command.getTimestamp(),
                     command.getDescription())
                     .senderIBAN(senderAccount.getIban())
                     .receiverIBAN(receiverAccount.getIban())
-                    .amountString(amount + " " + receiverAccount.getCurrency())
+                    .amountString(amountRounded + " " + receiverAccount.getCurrency())
                     .transferType("received")
                     .build();
 
