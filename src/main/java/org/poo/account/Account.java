@@ -1,8 +1,12 @@
-package org.poo.bank;
+package org.poo.account;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.poo.bank.Card;
+import org.poo.bank.SetupBank;
+import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
+import org.poo.transactions.Transaction;
 import org.poo.utils.Utils;
 
 import java.util.ArrayList;
@@ -18,6 +22,7 @@ public abstract class Account {
     private String accountType;
     private ArrayList<Card> cards = new ArrayList<>();
     private User owner;
+    private ArrayList<Transaction> transactions = new ArrayList<>();
 
     public Account(CommandInput commandInput) {
         iban = Utils.generateIBAN();
@@ -43,30 +48,22 @@ public abstract class Account {
     }
 
     public double withdraw(double amount) {
-        if (balance - amount < minBalance) {
-            // update() transactions with an error message
+        if (balance - amount <= minBalance) {
             return 0;
-            //throw new IllegalArgumentException("Not enough funds");
         }
         balance -= amount;
         return amount;
     }
-}
 
-class ClassicAccount extends Account {
-    public ClassicAccount(CommandInput commandInput) {
-        super(commandInput);
-    }
-}
-
-@Getter
-class SavingsAccount extends Account {
-    private double interestRate;
-
-    public SavingsAccount(CommandInput commandInput) {
-        super(commandInput);
-        interestRate = commandInput.getInterestRate();
+    public boolean checkEnoughMoney(double amount) {
+        if (balance - amount <= minBalance) {
+            return false;
+        }
+        return true;
     }
 
+    public void addTransaction(Transaction transaction) {
+        transactions.add(transaction);
+    }
 }
 

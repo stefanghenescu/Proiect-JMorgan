@@ -1,5 +1,7 @@
-package org.poo.bank;
+package org.poo.account;
 
+import org.poo.account.SavingsAccount;
+import org.poo.account.ClassicAccount;
 import org.poo.fileio.CommandInput;
 
 public class AccountFactory {

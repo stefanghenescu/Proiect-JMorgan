@@ -3,15 +3,12 @@ package org.poo.bank;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.Getter;
 import lombok.Setter;
+import org.poo.account.Account;
 import org.poo.actions.Command;
-import org.poo.fileio.CommandInput;
-import org.poo.fileio.ExchangeInput;
-import org.poo.fileio.ObjectInput;
-import org.poo.fileio.UserInput;
+import org.poo.fileio.*;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import javax.management.monitor.StringMonitor;
+import java.util.*;
 
 @Setter
 @Getter
@@ -20,6 +17,7 @@ public class SetupBank {
     private Map<String, Account> accounts = new HashMap<>();
     private Map<String, Card> cards = new HashMap<>();
     private ExchangeRates exchangeRates = new ExchangeRates();
+    private Map<String, String> aliases = new HashMap<>();
     private ArrayNode output;
 
     public SetupBank(ObjectInput input, ArrayNode output) {
@@ -63,6 +61,27 @@ public class SetupBank {
                 break;
             case "sendMoney":
                 Command.sendMoney(this, input);
+                break;
+            case "printTransactions":
+                Command.printTransactions(this, input, output);
+                break;
+            case "setAlias":
+                Command.setAlias(this, input);
+                break;
+            case "checkCardStatus":
+                Command.checkCardStatus(this, input, output);
+                break;
+            case "splitPayment":
+                Command.splitPayment(this, input, output);
+                break;
+            case "addInterest":
+                Command.addInterest(this, input, output);
+                break;
+            case "changeInterestRate":
+                Command.changeInterestRate(this, input, output);
+                break;
+            case "report", "spendingsReport":
+                Command.makeReport(this, input, output);
                 break;
             default:
                 //throw new IllegalArgumentException("Invalid command");
