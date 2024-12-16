@@ -35,56 +35,25 @@ public class SetupBank {
 
     public void performCommands(CommandInput input) {
         switch (input.getCommand()) {
-            case "printUsers":
-                Command.printUsers(this, input, output);
-                break;
-            case "addAccount":
-                Command.addAccount(this, input);
-                break;
-            case "addFunds":
-                Command.addFunds(this, input);
-                break;
-            case "createCard", "createOneTimeCard":
-                Command.createCard(this, input);
-                break;
-            case "deleteAccount":
-                Command.deleteAccount(this, input, output);
-                break;
-            case "deleteCard":
-                Command.deleteCard(this, input);
-                break;
-            case "setMinBalance":
-                Command.setMinBalance(this, input);
-                break;
-            case "payOnline":
-                Command.payOnline(this, input, output);
-                break;
-            case "sendMoney":
-                Command.sendMoney(this, input);
-                break;
-            case "printTransactions":
-                Command.printTransactions(this, input, output);
-                break;
-            case "setAlias":
-                Command.setAlias(this, input);
-                break;
-            case "checkCardStatus":
-                Command.checkCardStatus(this, input, output);
-                break;
-            case "splitPayment":
-                Command.splitPayment(this, input, output);
-                break;
-            case "addInterest":
-                Command.addInterest(this, input, output);
-                break;
-            case "changeInterestRate":
-                Command.changeInterestRate(this, input, output);
-                break;
-            case "report", "spendingsReport":
-                Command.makeReport(this, input, output);
-                break;
-            default:
-                //throw new IllegalArgumentException("Invalid command");
-        }
+    case "printUsers" -> Command.printUsers(this, input, output);
+    case "addAccount" -> Command.addAccount(this, input);
+    case "addFunds" -> Command.addFunds(this, input);
+    case "createCard", "createOneTimeCard" -> Command.createCard(this, input);
+    case "deleteAccount" -> Command.deleteAccount(this, input, output);
+    case "deleteCard" -> Command.deleteCard(this, input);
+    case "setMinBalance" -> Command.setMinBalance(this, input);
+    case "payOnline" -> Command.payOnline(this, input, output);
+    case "sendMoney" -> Command.sendMoney(this, input);
+    case "printTransactions" -> Command.printTransactions(this, input, output);
+    case "setAlias" -> Command.setAlias(this, input);
+    case "checkCardStatus" -> Command.checkCardStatus(this, input, output);
+    case "splitPayment" -> Command.splitPayment(this, input, output);
+    case "addInterest" -> Command.addInterest(this, input, output);
+    case "changeInterestRate" -> Command.changeInterestRate(this, input, output);
+    case "report", "spendingsReport" -> Command.makeReport(this, input, output);
+    default -> {
+        //throw new IllegalArgumentException("Invalid command");
+    }
+}
     }
 }
