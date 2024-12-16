@@ -29,24 +29,34 @@ public class SpendingReport implements ReportStrategy {
         Map<String, Commerciant> commerciants = new TreeMap<>();
 
         for (Transaction transaction : account.getTransactions()) {
-            if (transaction.getTimestamp() >= command.getStartTimestamp()
-                && transaction.getTimestamp() <= command.getEndTimestamp()
-                && transaction.getCommerciant() != null) {
-                // add the transaction to the list of transactions for the report
-                transactions.add(transaction);
-
-                // check if the commerciant is already in the map of commerciants
-                // update the amount of money received by the commerciant
-                if (commerciants.containsKey(transaction.getCommerciant())) {
-                    Commerciant commerciant = commerciants.get(transaction.getCommerciant());
-                    commerciant.receiveMoney(transaction.getAmount());
-                } else {
-                    Commerciant commerciant = new Commerciant(transaction.getCommerciant());
-                    commerciant.receiveMoney(transaction.getAmount());
-                    commerciants.put(transaction.getCommerciant(), commerciant);
-                }
-            }
+            addTransaction(transaction, transactions, commerciants, command);
         }
         return JsonOutput.writeSpendingReport(command, account, transactions, commerciants);
+    }
+
+    private void addTransaction(Transaction transaction, List<Transaction> transactions,
+                               Map<String, Commerciant> commerciants, CommandInput command) {
+        if (transaction.getTimestamp() >= command.getStartTimestamp()
+                && transaction.getTimestamp() <= command.getEndTimestamp()
+                && transaction.getCommerciant() != null) {
+            // add the transaction to the list of transactions for the report
+            transactions.add(transaction);
+
+            // add the commerciant to the map of commerciants
+            addCommerciant(commerciants, transaction);
+        }
+    }
+
+    private void addCommerciant(Map<String, Commerciant> commerciants, Transaction transaction) {
+        // check if the commerciant is already in the map of commerciants
+        // update the amount of money received by the commerciant
+        if (commerciants.containsKey(transaction.getCommerciant())) {
+            Commerciant commerciant = commerciants.get(transaction.getCommerciant());
+            commerciant.receiveMoney(transaction.getAmount());
+        } else {
+            Commerciant commerciant = new Commerciant(transaction.getCommerciant());
+            commerciant.receiveMoney(transaction.getAmount());
+            commerciants.put(transaction.getCommerciant(), commerciant);
+        }
     }
 }

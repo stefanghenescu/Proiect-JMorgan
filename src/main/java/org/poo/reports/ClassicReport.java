@@ -21,12 +21,17 @@ public class ClassicReport implements ReportStrategy {
         List<Transaction> transactions = new ArrayList<>();
 
         for (Transaction transaction : account.getTransactions()) {
-            if (transaction.getTimestamp() >= command.getStartTimestamp()
-                && transaction.getTimestamp() <= command.getEndTimestamp()) {
-                transactions.add(transaction);
-            }
+            addTransaction(transaction, transactions, command);
         }
 
         return JsonOutput.writeClassicReport(command, account, transactions);
+    }
+
+    private void addTransaction(Transaction transaction, List<Transaction> transactions,
+                               CommandInput command) {
+        if (transaction.getTimestamp() >= command.getStartTimestamp()
+                && transaction.getTimestamp() <= command.getEndTimestamp()) {
+            transactions.add(transaction);
+        }
     }
 }
