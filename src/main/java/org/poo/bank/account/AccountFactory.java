@@ -2,8 +2,12 @@ package org.poo.bank.account;
 
 import org.poo.fileio.CommandInput;
 
-public class AccountFactory {
-    public static Account createAccount(CommandInput command) {
+public final class AccountFactory {
+    private AccountFactory() {
+        throw new UnsupportedOperationException("Utility class should not be instantiated");
+    }
+
+    public static Account createAccount(final CommandInput command) {
         String accountType = command.getAccountType();
 
         return switch (accountType) {
