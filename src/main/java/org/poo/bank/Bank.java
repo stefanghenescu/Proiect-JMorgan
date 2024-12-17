@@ -8,7 +8,10 @@ import org.poo.bank.cards.Card;
 import org.poo.commands.*;
 import org.poo.fileio.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Setter
 @Getter
@@ -20,7 +23,7 @@ public class Bank {
     private Map<String, String> aliases = new HashMap<>();
     private ArrayNode output;
 
-    public Bank(ObjectInput input, ArrayNode output) {
+    public Bank(final ObjectInput input, final ArrayNode output) {
         for (UserInput userInput : input.getUsers()) {
             User user = new User(userInput);
             users.put(user.getEmail(), user);
@@ -33,35 +36,35 @@ public class Bank {
         this.output = output;
     }
 
-    public User getUser(String email) {
+    public User getUser(final String email) {
         if (!users.containsKey(email)) {
             throw new NoSuchElementException("User not found");
         }
         return users.get(email);
     }
 
-    public Account getAccount(String iban) {
+    public Account getAccount(final String iban) {
         if (!accounts.containsKey(iban)) {
             throw new NoSuchElementException("Account not found");
         }
         return accounts.get(iban);
     }
 
-    public Card getCard(String cardNumber) {
+    public Card getCard(final String cardNumber) {
         if (!cards.containsKey(cardNumber)) {
             throw new NoSuchElementException("Card not found");
         }
         return cards.get(cardNumber);
     }
 
-    public void performCommands(CommandInput input) {
+    public void performCommands(final CommandInput input) {
         Command command = createCommand(input);
         if (command != null) {
             command.execute();
         }
     }
 
-    private Command createCommand(CommandInput input) {
+    private Command createCommand(final CommandInput input) {
         return switch (input.getCommand()) {
             case "printUsers" -> new PrintUsersCommand(this, input, output);
             case "addAccount" -> new AddAccountCommand(this, input);

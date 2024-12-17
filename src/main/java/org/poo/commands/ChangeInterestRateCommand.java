@@ -13,7 +13,8 @@ public class ChangeInterestRateCommand implements Command {
     private CommandInput command;
     private ArrayNode output;
 
-    public ChangeInterestRateCommand(Bank bank, CommandInput command, ArrayNode output) {
+    public ChangeInterestRateCommand(final Bank bank, final CommandInput command,
+                                     final ArrayNode output) {
         this.bank = bank;
         this.command = command;
         this.output = output;

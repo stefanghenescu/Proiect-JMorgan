@@ -8,11 +8,15 @@ import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
 import org.poo.utils.JsonOutput;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.TreeMap;
 
 public class SpendingReport implements ReportStrategy {
     @Override
-    public ObjectNode generateReport(Bank bank, CommandInput command) {
+    public ObjectNode generateReport(final Bank bank, final CommandInput command) {
         Account account;
         try {
             account = bank.getAccount(command.getAccount());
@@ -35,8 +39,9 @@ public class SpendingReport implements ReportStrategy {
         return JsonOutput.writeSpendingReport(command, account, transactions, commerciants);
     }
 
-    private void addTransaction(Transaction transaction, List<Transaction> transactions,
-                               Map<String, Commerciant> commerciants, CommandInput command) {
+    private void addTransaction(final Transaction transaction, final List<Transaction> transactions,
+                                final Map<String, Commerciant> commerciants,
+                                final CommandInput command) {
         if (transaction.getTimestamp() >= command.getStartTimestamp()
                 && transaction.getTimestamp() <= command.getEndTimestamp()
                 && transaction.getCommerciant() != null) {
@@ -48,7 +53,8 @@ public class SpendingReport implements ReportStrategy {
         }
     }
 
-    private void addCommerciant(Map<String, Commerciant> commerciants, Transaction transaction) {
+    private void addCommerciant(final Map<String, Commerciant> commerciants,
+                                final Transaction transaction) {
         // check if the commerciant is already in the map of commerciants
         // update the amount of money received by the commerciant
         if (commerciants.containsKey(transaction.getCommerciant())) {

@@ -3,7 +3,6 @@ package org.poo.bank.cards;
 import lombok.Getter;
 import lombok.Setter;
 import org.poo.bank.account.Account;
-import org.poo.bank.Bank;
 import org.poo.transactions.Transaction;
 import org.poo.utils.Utils;
 
@@ -15,13 +14,13 @@ public class Card {
     private String number;
     private Account owner;
 
-    public Card(Account ownerAccount) {
+    public Card(final Account ownerAccount) {
         number = Utils.generateCardNumber();
         status = "active";
         owner = ownerAccount;
     }
 
-    public boolean payOnline(double amount, long timestamp, String commerciant) {
+    public boolean payOnline(final double amount, final long timestamp, final String commerciant) {
         Transaction transaction;
         if (status.equals("frozen")) {
             // add transaction with an error message
@@ -47,7 +46,7 @@ public class Card {
         return false;
     }
 
-    public void check(long timestamp) {
+    public void check(final long timestamp) {
         if (owner.getBalance() <= owner.getMinBalance()) {
             freeze(timestamp);
         } else if (owner.getBalance() - owner.getMinBalance() <= DIF_BALANCE) {
@@ -55,7 +54,7 @@ public class Card {
         }
     }
 
-    private void freeze(long timestamp) {
+    private void freeze(final long timestamp) {
         status = "frozen";
         Transaction transaction = new Transaction.TransactionBuilder(timestamp,
                 "You have reached the minimum amount of funds, the card will be frozen")

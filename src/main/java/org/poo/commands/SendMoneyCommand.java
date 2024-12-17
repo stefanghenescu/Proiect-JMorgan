@@ -8,10 +8,11 @@ import org.poo.transactions.Transaction;
 import java.util.NoSuchElementException;
 
 public class SendMoneyCommand implements Command {
+    private static final double ROUNDING = 10000.0;
     private Bank bank;
     private CommandInput command;
 
-    public SendMoneyCommand(Bank bank, CommandInput command) {
+    public SendMoneyCommand(final Bank bank, final CommandInput command) {
         this.bank = bank;
         this.command = command;
     }
@@ -38,7 +39,7 @@ public class SendMoneyCommand implements Command {
                 receiverAccount.getCurrency());
         double amount = amountWithdrawn * exchangeRate;
 
-        double amountRounded = Math.round(amount * 10000.0) / 10000.0;
+        double amountRounded = Math.round(amount * ROUNDING) / ROUNDING;
 
         receiverAccount.addFunds(amount);
 

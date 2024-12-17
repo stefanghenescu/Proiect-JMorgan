@@ -7,7 +7,7 @@ public class SetAliasCommand implements Command {
     private Bank bank;
     private CommandInput command;
 
-    public SetAliasCommand(Bank bank, CommandInput command) {
+    public SetAliasCommand(final Bank bank, final CommandInput command) {
         this.bank = bank;
         this.command = command;
     }

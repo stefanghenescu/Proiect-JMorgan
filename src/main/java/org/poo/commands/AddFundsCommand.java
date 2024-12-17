@@ -10,7 +10,7 @@ public class AddFundsCommand implements Command {
     private Bank bank;
     private CommandInput command;
 
-    public AddFundsCommand(Bank bank, CommandInput command) {
+    public AddFundsCommand(final Bank bank, final CommandInput command) {
         this.bank = bank;
         this.command = command;
     }

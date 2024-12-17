@@ -14,14 +14,14 @@ import org.poo.transactions.Transaction;
 import java.util.List;
 import java.util.Map;
 
-public class JsonOutput {
+public final class JsonOutput {
     public static final ObjectMapper MAPPER = new ObjectMapper();
 
     private JsonOutput() {
         throw new UnsupportedOperationException("Utility class should not be instantiated");
     }
 
-    public static ObjectNode writeUsers(CommandInput command, Bank bank) {
+    public static ObjectNode writeUsers(final CommandInput command, final Bank bank) {
         ObjectNode usersArray = MAPPER.createObjectNode();
 
         usersArray.put("command", command.getCommand());
@@ -37,7 +37,7 @@ public class JsonOutput {
         return usersArray;
     }
 
-    private static ObjectNode writeOneUser(User user) {
+    private static ObjectNode writeOneUser(final User user) {
         ObjectNode userNode = MAPPER.createObjectNode();
 
         userNode.put("firstName", user.getFirstName());
@@ -55,7 +55,7 @@ public class JsonOutput {
         return userNode;
     }
 
-    private static ObjectNode writeAccount(Account account) {
+    private static ObjectNode writeAccount(final Account account) {
         ObjectNode accountNode = MAPPER.createObjectNode();
 
         accountNode.put("IBAN", account.getIban());
@@ -73,7 +73,7 @@ public class JsonOutput {
         return accountNode;
     }
 
-    public static ObjectNode accountNotFound(CommandInput command) {
+    public static ObjectNode accountNotFound(final CommandInput command) {
         ObjectNode errorAccount = MAPPER.createObjectNode();
         ObjectNode output = MAPPER.createObjectNode();
 
@@ -88,7 +88,7 @@ public class JsonOutput {
         return errorAccount;
     }
 
-    private static ObjectNode writeCard(Card card) {
+    private static ObjectNode writeCard(final Card card) {
         ObjectNode cardNode = MAPPER.createObjectNode();
 
         cardNode.put("cardNumber", card.getNumber());
@@ -97,7 +97,7 @@ public class JsonOutput {
         return cardNode;
     }
 
-    public static ObjectNode eraseAccount(CommandInput command, Account account) {
+    public static ObjectNode eraseAccount(final CommandInput command, final Account account) {
         ObjectNode deleteAccount = MAPPER.createObjectNode();
         ObjectNode output = MAPPER.createObjectNode();
 
@@ -105,8 +105,8 @@ public class JsonOutput {
 
 
         if (account.getBalance() != 0) {
-            output.put("error", "Account couldn't be deleted - see org.poo.transactions for " +
-                    "details");
+            output.put("error", "Account couldn't be deleted - see org.poo.transactions for "
+                    + "details");
             output.put("timestamp", command.getTimestamp());
         } else {
             output.put("success", "Account deleted");
@@ -119,7 +119,7 @@ public class JsonOutput {
         return deleteAccount;
     }
 
-    public static ObjectNode cardNotFound(CommandInput command) {
+    public static ObjectNode cardNotFound(final CommandInput command) {
         ObjectNode errorCard = MAPPER.createObjectNode();
         ObjectNode output = MAPPER.createObjectNode();
 
@@ -134,8 +134,7 @@ public class JsonOutput {
         return errorCard;
     }
 
-    public static ObjectNode writeTransactions(CommandInput commandInput,  Bank bank,
-                                               User user) {
+    public static ObjectNode writeTransactions(final CommandInput commandInput, final User user) {
         ObjectNode transactionsOutput = MAPPER.createObjectNode();
 
         transactionsOutput.put("command", commandInput.getCommand());
@@ -153,11 +152,11 @@ public class JsonOutput {
         return  transactionsOutput;
     }
 
-    public static ObjectNode writeTransaction(Transaction transaction) {
+    public static ObjectNode writeTransaction(final Transaction transaction) {
         return MAPPER.valueToTree(transaction);
     }
 
-    public static ObjectNode writeErrorSavingAccount(CommandInput command) {
+    public static ObjectNode writeErrorSavingAccount(final CommandInput command) {
         ObjectNode errorSavingAccount = MAPPER.createObjectNode();
         ObjectNode output = MAPPER.createObjectNode();
 
@@ -172,8 +171,8 @@ public class JsonOutput {
         return errorSavingAccount;
     }
 
-    public static ObjectNode writeClassicReport(CommandInput command, Account account,
-                                                List<Transaction> transactions) {
+    public static ObjectNode writeClassicReport(final CommandInput command, final Account account,
+                                                final List<Transaction> transactions) {
         ObjectNode report = MAPPER.createObjectNode();
         report.put("command", command.getCommand());
 
@@ -196,9 +195,9 @@ public class JsonOutput {
         return report;
     }
 
-    public static ObjectNode writeSpendingReport(CommandInput command, Account account,
-                                                 List<Transaction> transactions,
-                                                 Map<String, Commerciant> commerciants) {
+    public static ObjectNode writeSpendingReport(final CommandInput command, final Account account,
+                                                 final List<Transaction> transactions,
+                                                 final Map<String, Commerciant> commerciants) {
         ObjectNode report = MAPPER.createObjectNode();
         report.put("command", command.getCommand());
 
@@ -234,7 +233,7 @@ public class JsonOutput {
         return report;
     }
 
-    public static ObjectNode accountNotEligible(CommandInput command) {
+    public static ObjectNode accountNotEligible(final CommandInput command) {
         ObjectNode errorAccount = MAPPER.createObjectNode();
         ObjectNode output = MAPPER.createObjectNode();
 

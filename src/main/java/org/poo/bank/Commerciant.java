@@ -10,12 +10,12 @@ public class Commerciant {
     private String name;
     private double moneyReceived;
 
-    public Commerciant(String name) {
+    public Commerciant(final String name) {
         this.name = name;
         moneyReceived = 0;
     }
 
-    public void receiveMoney(double amount) {
+    public void receiveMoney(final double amount) {
         moneyReceived += amount;
     }
 

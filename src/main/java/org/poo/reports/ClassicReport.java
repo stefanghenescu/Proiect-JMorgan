@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 
 public class ClassicReport implements ReportStrategy {
     @Override
-    public ObjectNode generateReport(Bank bank, CommandInput command) {
+    public ObjectNode generateReport(final Bank bank, final CommandInput command) {
         Account account;
         try {
             account = bank.getAccount(command.getAccount());
@@ -30,8 +30,8 @@ public class ClassicReport implements ReportStrategy {
         return JsonOutput.writeClassicReport(command, account, transactions);
     }
 
-    private void addTransaction(Transaction transaction, List<Transaction> transactions,
-                               CommandInput command) {
+    private void addTransaction(final Transaction transaction, final List<Transaction> transactions,
+                               final CommandInput command) {
         if (transaction.getTimestamp() >= command.getStartTimestamp()
                 && transaction.getTimestamp() <= command.getEndTimestamp()) {
             transactions.add(transaction);

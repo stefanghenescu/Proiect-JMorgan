@@ -9,11 +9,11 @@ import org.poo.transactions.Transaction;
 
 import java.util.NoSuchElementException;
 
-public class AddAccountCommand implements Command{
+public class AddAccountCommand implements Command {
     private Bank bank;
     private CommandInput command;
 
-    public AddAccountCommand(Bank bank, CommandInput command) {
+    public AddAccountCommand(final Bank bank, final CommandInput command) {
         this.bank = bank;
         this.command = command;
     }

@@ -17,7 +17,7 @@ public class User {
     private ArrayList<Account> accounts = new ArrayList<>();
     private List<Transaction> transactions = new ArrayList<>();
 
-    public User(UserInput userInput) {
+    public User(final UserInput userInput) {
         firstName = userInput.getFirstName();
         lastName = userInput.getLastName();
         email = userInput.getEmail();
@@ -27,7 +27,7 @@ public class User {
         accounts.add(account);
     }
 
-    public boolean deleteAccount(Account account) {
+    public boolean deleteAccount(final Account account) {
         if (account.getBalance() != 0) {
             return false;
         }
@@ -39,7 +39,7 @@ public class User {
         return true;
     }
 
-    public void addTransaction(Transaction transaction) {
+    public void addTransaction(final Transaction transaction) {
         transactions.add(transaction);
     }
 }

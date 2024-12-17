@@ -12,7 +12,7 @@ public class DeleteCardCommand implements Command {
     private Bank bank;
     private CommandInput command;
 
-    public DeleteCardCommand(Bank bank, CommandInput command) {
+    public DeleteCardCommand(final Bank bank, final CommandInput command) {
         this.bank = bank;
         this.command = command;
     }

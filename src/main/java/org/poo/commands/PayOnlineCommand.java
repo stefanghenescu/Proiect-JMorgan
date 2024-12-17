@@ -15,7 +15,7 @@ public class PayOnlineCommand implements Command {
     private CommandInput command;
     private ArrayNode output;
 
-    public PayOnlineCommand(Bank bank, CommandInput command, ArrayNode output) {
+    public PayOnlineCommand(final Bank bank, final CommandInput command, final ArrayNode output) {
         this.bank = bank;
         this.command = command;
         this.output = output;

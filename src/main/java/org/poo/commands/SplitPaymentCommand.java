@@ -8,10 +8,11 @@ import org.poo.transactions.Transaction;
 import java.util.NoSuchElementException;
 
 public class SplitPaymentCommand implements Command {
+    private static final String SPLIT_PAYMENT_MESSAGE = "Split payment of %.2f %s";
     private Bank bank;
     private CommandInput command;
 
-    public SplitPaymentCommand(Bank bank, CommandInput command) {
+    public SplitPaymentCommand(final Bank bank, final CommandInput command) {
         this.bank = bank;
         this.command = command;
     }
@@ -31,7 +32,8 @@ public class SplitPaymentCommand implements Command {
                 return;
             }
 
-            double exchangeRate = bank.getExchangeRates().getRate(command.getCurrency(), account.getCurrency());
+            double exchangeRate = bank.getExchangeRates().getRate(command.getCurrency(),
+                                                                    account.getCurrency());
             everyonePaid = account.checkEnoughMoney(amountPerPerson * exchangeRate);
 
             if (!everyonePaid) {
@@ -43,7 +45,8 @@ public class SplitPaymentCommand implements Command {
         if (everyonePaid) {
             for (String accountIBAN : command.getAccounts()) {
                 Account account = bank.getAccount(accountIBAN);
-                double exchangeRate = bank.getExchangeRates().getRate(command.getCurrency(), account.getCurrency());
+                double exchangeRate = bank.getExchangeRates().getRate(command.getCurrency(),
+                                                                        account.getCurrency());
                 account.withdraw(amountPerPerson * exchangeRate);
             }
         }
@@ -52,7 +55,7 @@ public class SplitPaymentCommand implements Command {
         transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
                 // I do like this as ref has amount with 2 decimals evan if it is an int
                 // (1269.00 EUR)
-                String.format("Split payment of %.2f %s", command.getAmount(), command.getCurrency()))
+                String.format(SPLIT_PAYMENT_MESSAGE, command.getAmount(), command.getCurrency()))
                 .error(error)
                 .currency(command.getCurrency())
                 .amount(amountPerPerson)

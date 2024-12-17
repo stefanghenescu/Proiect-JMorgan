@@ -15,7 +15,8 @@ public class DeleteAccountCommand implements Command {
     private CommandInput command;
     private ArrayNode output;
 
-    public DeleteAccountCommand(Bank bank, CommandInput command, ArrayNode output) {
+    public DeleteAccountCommand(final Bank bank, final CommandInput command,
+                                final ArrayNode output) {
         this.bank = bank;
         this.command = command;
         this.output = output;

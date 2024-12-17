@@ -10,7 +10,7 @@ public class SetMinBalanceCommand implements Command {
     private Bank bank;
     private CommandInput command;
 
-    public SetMinBalanceCommand(Bank bank, CommandInput command) {
+    public SetMinBalanceCommand(final Bank bank, final CommandInput command) {
         this.bank = bank;
         this.command = command;
     }

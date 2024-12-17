@@ -12,7 +12,8 @@ public class PrintTransactionsCommand implements Command {
     private CommandInput command;
     private ArrayNode output;
 
-    public PrintTransactionsCommand(Bank bank, CommandInput command, ArrayNode output) {
+    public PrintTransactionsCommand(final Bank bank, final CommandInput command,
+                                    final ArrayNode output) {
         this.bank = bank;
         this.command = command;
         this.output = output;
@@ -21,7 +22,7 @@ public class PrintTransactionsCommand implements Command {
     @Override
     public void execute() {
         User transactionsUser = bank.getUser(command.getEmail());
-        ObjectNode transactionsArray = JsonOutput.writeTransactions(command, bank, transactionsUser);
+        ObjectNode transactionsArray = JsonOutput.writeTransactions(command, transactionsUser);
         output.add(transactionsArray);
     }
 }

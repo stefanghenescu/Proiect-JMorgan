@@ -11,7 +11,7 @@ public class PrintUsersCommand implements Command {
     private CommandInput command;
     private ArrayNode output;
 
-    public PrintUsersCommand(Bank bank, CommandInput command, ArrayNode output) {
+    public PrintUsersCommand(final Bank bank, final CommandInput command, final ArrayNode output) {
         this.bank = bank;
         this.command = command;
         this.output = output;

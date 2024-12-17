@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Transaction {
+public final class Transaction {
     private final long timestamp;
     private final String description;
     private final String card;
@@ -30,7 +30,7 @@ public class Transaction {
     @JsonIgnore
     private final String amountString;
 
-    private Transaction(TransactionBuilder builder) {
+    private Transaction(final TransactionBuilder builder) {
         timestamp = builder.timestamp;
         description = builder.description;
         card = builder.card;
@@ -52,10 +52,7 @@ public class Transaction {
         if (amountString != null) {
             return amountString;
         }
-        if (amount != null) {
-            return amount;
-        }
-        return null;
+        return amount;
     }
 
     public static class TransactionBuilder {
@@ -74,68 +71,68 @@ public class Transaction {
         private List<String> involvedAccounts;
         private String error;
 
-        public TransactionBuilder(long timestamp, String description) {
+        public TransactionBuilder(final long timestamp, final String description) {
             this.timestamp = timestamp;
             this.description = description;
         }
 
-        public TransactionBuilder card(String card) {
-            this.card = card;
+        public TransactionBuilder card(final String cardNumber) {
+            card = cardNumber;
             return this;
         }
 
-        public TransactionBuilder cardHolder(String cardHolder) {
-            this.cardHolder = cardHolder;
+        public TransactionBuilder cardHolder(final String holder) {
+            cardHolder = holder;
             return this;
         }
 
-        public TransactionBuilder account(String account) {
-            this.account = account;
+        public TransactionBuilder account(final String accountIBAN) {
+            account = accountIBAN;
             return this;
         }
 
-        public TransactionBuilder senderIBAN(String senderIBAN) {
-            this.senderIBAN = senderIBAN;
+        public TransactionBuilder senderIBAN(final String senderAccountIBAN) {
+            senderIBAN = senderAccountIBAN;
             return this;
         }
 
-        public TransactionBuilder receiverIBAN(String receiverIBAN) {
-            this.receiverIBAN = receiverIBAN;
+        public TransactionBuilder receiverIBAN(final String receiverAccountIBAN) {
+            receiverIBAN = receiverAccountIBAN;
             return this;
         }
 
-        public TransactionBuilder amount(Double amount) {
-            this.amount = amount;
+        public TransactionBuilder amount(final Double transactionAmount) {
+            amount = transactionAmount;
             return this;
         }
 
-        public TransactionBuilder amountString(String amountString) {
-            this.amountString = amountString;
+        public TransactionBuilder amountString(final String transactionAmount) {
+            amountString = transactionAmount;
             return this;
         }
 
-        public TransactionBuilder transferType(String transferType) {
-            this.transferType = transferType;
+        public TransactionBuilder transferType(final String transfer) {
+            transferType = transfer;
             return this;
         }
 
-        public TransactionBuilder commerciant(String commerciant) {
-            this.commerciant = commerciant;
+        public TransactionBuilder commerciant(final String commerciantName) {
+            commerciant = commerciantName;
             return this;
         }
 
-        public TransactionBuilder currency(String currency) {
-            this.currency = currency;
+        public TransactionBuilder currency(final String currencyName) {
+            currency = currencyName;
             return this;
         }
 
-        public TransactionBuilder involvedAccounts(List<String> involvedAccounts) {
-            this.involvedAccounts = involvedAccounts;
+        public TransactionBuilder involvedAccounts(final List<String> accountsInvolved) {
+            involvedAccounts = accountsInvolved;
             return this;
         }
 
-        public TransactionBuilder error(String error) {
-            this.error = error;
+        public TransactionBuilder error(final String errorMessage) {
+            error = errorMessage;
             return this;
         }
 

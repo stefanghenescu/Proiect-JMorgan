@@ -9,7 +9,7 @@ import org.poo.fileio.CommandInput;
 public class SavingsAccount extends Account {
     private double interestRate;
 
-    public SavingsAccount(CommandInput commandInput) {
+    public SavingsAccount(final CommandInput commandInput) {
         super(commandInput);
         interestRate = commandInput.getInterestRate();
     }

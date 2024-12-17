@@ -14,7 +14,7 @@ public class CreateCardCommand implements Command {
     private Bank bank;
     private CommandInput command;
 
-    public CreateCardCommand(Bank bank, CommandInput command) {
+    public CreateCardCommand(final Bank bank, final CommandInput command) {
         this.bank = bank;
         this.command = command;
     }

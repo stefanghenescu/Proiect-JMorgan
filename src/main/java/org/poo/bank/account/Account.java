@@ -3,7 +3,6 @@ package org.poo.bank.account;
 import lombok.Getter;
 import lombok.Setter;
 import org.poo.bank.cards.Card;
-import org.poo.bank.Bank;
 import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
@@ -24,26 +23,26 @@ public class Account {
     private User owner;
     private ArrayList<Transaction> transactions = new ArrayList<>();
 
-    public Account(CommandInput commandInput) {
+    public Account(final CommandInput commandInput) {
         iban = Utils.generateIBAN();
         balance = DEFAULT_BALANCE;
         currency = commandInput.getCurrency();
         accountType = commandInput.getAccountType();
     }
 
-    public void addCard(Card card) {
+    public void addCard(final Card card) {
         cards.add(card);
     }
 
-    public void addFunds(double amount) {
+    public void addFunds(final double amount) {
         balance += amount;
     }
 
-    public void deleteCard(Card card) {
+    public void deleteCard(final Card card) {
         cards.remove(card);
     }
 
-    public double withdraw(double amount) {
+    public double withdraw(final double amount) {
         if (balance - amount <= minBalance) {
             return 0;
         }
@@ -51,14 +50,14 @@ public class Account {
         return amount;
     }
 
-    public boolean checkEnoughMoney(double amount) {
+    public boolean checkEnoughMoney(final double amount) {
         if (balance - amount <= minBalance) {
             return false;
         }
         return true;
     }
 
-    public void addTransaction(Transaction transaction) {
+    public void addTransaction(final Transaction transaction) {
         transactions.add(transaction);
     }
 }
