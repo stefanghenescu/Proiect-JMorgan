@@ -8,6 +8,8 @@ import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
 
+import java.util.NoSuchElementException;
+
 public class CreateCardCommand implements Command {
     private Bank bank;
     private CommandInput command;
@@ -19,16 +21,22 @@ public class CreateCardCommand implements Command {
 
     public void execute() {
         // get the account to add the card to
-        Account account = bank.getAccount(command.getAccount());
-
-        User user = bank.getUser(command.getEmail());
-        if (user == null)
+        Account account;
+        try {
+            account = bank.getAccount(command.getAccount());
+        } catch (NoSuchElementException e) {
             return;
+        }
+
+        User user;
+        try {
+            user = bank.getUser(command.getEmail());
+        } catch (NoSuchElementException e) {
+            return;
+        }
 
         if (!user.getAccounts().contains(account)) {
-            // update() transactions with an error message
             return;
-            //throw new IllegalArgumentException("User does not own the account");
         }
 
         Card card;

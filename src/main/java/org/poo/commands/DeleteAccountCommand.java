@@ -8,6 +8,8 @@ import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
 import org.poo.utils.JsonOutput;
 
+import java.util.NoSuchElementException;
+
 public class DeleteAccountCommand implements Command {
     private Bank bank;
     private CommandInput command;
@@ -24,16 +26,18 @@ public class DeleteAccountCommand implements Command {
         String accountIBAN = bank.getAliases().get(command.getAccount());
 
         // get the account to delete
-        Account account = bank.getAccount(accountIBAN);
-
-        if (account == null) {
+        Account account;
+        try {
+            account = bank.getAccount(accountIBAN);
+        } catch (NoSuchElementException e) {
             return;
         }
 
         // get the user to delete the account from
-        User user = bank.getUser(command.getEmail());
-
-        if (user == null) {
+        User user;
+        try {
+            user = bank.getUser(command.getEmail());
+        } catch (NoSuchElementException e) {
             return;
         }
 

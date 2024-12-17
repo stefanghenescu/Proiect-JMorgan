@@ -56,8 +56,6 @@ public class Card {
     }
 
     private void freeze(long timestamp) {
-
-
         status = "frozen";
         Transaction transaction = new Transaction.TransactionBuilder(timestamp,
                 "You have reached the minimum amount of funds, the card will be frozen")

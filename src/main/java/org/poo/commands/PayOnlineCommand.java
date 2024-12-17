@@ -8,6 +8,8 @@ import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.JsonOutput;
 
+import java.util.NoSuchElementException;
+
 public class PayOnlineCommand implements Command {
     private Bank bank;
     private CommandInput command;
@@ -21,14 +23,15 @@ public class PayOnlineCommand implements Command {
 
     @Override
     public void execute() {
-        Card card = bank.getCard(command.getCardNumber());
-        User cardOwnerUser = bank.getUser(command.getEmail());
-
-        if (card == null) {
+        Card card;
+        try {
+            card = bank.getCard(command.getCardNumber());
+        } catch (NoSuchElementException e) {
             output.add(JsonOutput.cardNotFound(command));
             return;
         }
 
+        User cardOwnerUser = bank.getUser(command.getEmail());
         Account cardAccount = card.getOwner();
         if (cardOwnerUser == null || !cardOwnerUser.getAccounts().contains(cardAccount)) {
             output.add(JsonOutput.cardNotFound(command));

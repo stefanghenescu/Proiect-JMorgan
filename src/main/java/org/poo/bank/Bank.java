@@ -34,14 +34,23 @@ public class Bank {
     }
 
     public User getUser(String email) {
+        if (!users.containsKey(email)) {
+            throw new NoSuchElementException("User not found");
+        }
         return users.get(email);
     }
 
     public Account getAccount(String iban) {
+        if (!accounts.containsKey(iban)) {
+            throw new NoSuchElementException("Account not found");
+        }
         return accounts.get(iban);
     }
 
     public Card getCard(String cardNumber) {
+        if (!cards.containsKey(cardNumber)) {
+            throw new NoSuchElementException("Card not found");
+        }
         return cards.get(cardNumber);
     }
 
@@ -70,7 +79,6 @@ public class Bank {
             case "addInterest" -> new AddInterestCommand(this, input, output);
             case "changeInterestRate" -> new ChangeInterestRateCommand(this, input, output);
             case "report", "spendingsReport" -> new MakeReportCommand(this, input, output);
-            // Add all other case-based command mappings here
             default -> null;
         };
     }

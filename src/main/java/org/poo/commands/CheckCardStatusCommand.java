@@ -6,6 +6,8 @@ import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.JsonOutput;
 
+import java.util.NoSuchElementException;
+
 public class CheckCardStatusCommand implements Command {
     private Bank bank;
     private CommandInput command;
@@ -19,9 +21,10 @@ public class CheckCardStatusCommand implements Command {
 
     @Override
     public void execute() {
-        Card card = bank.getCard(command.getCardNumber());
-
-        if (card == null) {
+        Card card;
+        try {
+            card = bank.getCard(command.getCardNumber());
+        } catch (NoSuchElementException e) {
             output.add(JsonOutput.cardNotFound(command));
             return;
         }

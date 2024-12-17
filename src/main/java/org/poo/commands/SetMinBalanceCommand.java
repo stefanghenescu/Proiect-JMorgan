@@ -4,6 +4,8 @@ import org.poo.bank.account.Account;
 import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
 
+import java.util.NoSuchElementException;
+
 public class SetMinBalanceCommand implements Command {
     private Bank bank;
     private CommandInput command;
@@ -21,7 +23,7 @@ public class SetMinBalanceCommand implements Command {
         Account account;
         try {
             account = bank.getAccount(accountIBAN);
-        } catch (NullPointerException e) {
+        } catch (NoSuchElementException e) {
             return;
         }
 

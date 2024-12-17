@@ -7,6 +7,8 @@ import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
 
+import java.util.NoSuchElementException;
+
 public class AddAccountCommand implements Command{
     private Bank bank;
     private CommandInput command;
@@ -26,9 +28,12 @@ public class AddAccountCommand implements Command{
 
         // get the user with the email from the command
         // add the account to that user
-        User userToAddAccount = bank.getUser(userEmail);
-        if (userToAddAccount == null)
+        User userToAddAccount;
+        try {
+            userToAddAccount = bank.getUser(userEmail);
+        } catch (NoSuchElementException e) {
             return;
+        }
 
         account.setOwner(userToAddAccount);
         userToAddAccount.addAccount(account);

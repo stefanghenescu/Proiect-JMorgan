@@ -6,6 +6,8 @@ import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
 
+import java.util.NoSuchElementException;
+
 public class DeleteCardCommand implements Command {
     private Bank bank;
     private CommandInput command;
@@ -18,9 +20,10 @@ public class DeleteCardCommand implements Command {
     @Override
     public void execute() {
         // get the card to delete
-        Card card = bank.getCard(command.getCardNumber());
-
-        if (card == null) {
+        Card card;
+        try {
+            card = bank.getCard(command.getCardNumber());
+        } catch (NoSuchElementException e) {
             return;
         }
 

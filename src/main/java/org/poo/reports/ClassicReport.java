@@ -9,12 +9,15 @@ import org.poo.utils.JsonOutput;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class ClassicReport implements ReportStrategy {
     @Override
     public ObjectNode generateReport(Bank bank, CommandInput command) {
-        Account account = bank.getAccounts().get(command.getAccount());
-        if (account == null) {
+        Account account;
+        try {
+            account = bank.getAccount(command.getAccount());
+        } catch (NoSuchElementException e) {
             return JsonOutput.accountNotFound(command);
         }
 

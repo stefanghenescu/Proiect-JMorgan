@@ -5,6 +5,8 @@ import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
 
+import java.util.NoSuchElementException;
+
 public class SplitPaymentCommand implements Command {
     private Bank bank;
     private CommandInput command;
@@ -22,9 +24,10 @@ public class SplitPaymentCommand implements Command {
         String error = null;
 
         for (String accountIBAN : command.getAccounts().reversed()) {
-            Account account = bank.getAccount(accountIBAN);
-
-            if (account == null) {
+            Account account;
+            try {
+                account = bank.getAccount(accountIBAN);
+            } catch (NoSuchElementException e) {
                 return;
             }
 

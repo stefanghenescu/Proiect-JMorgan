@@ -5,6 +5,8 @@ import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
 
+import java.util.NoSuchElementException;
+
 public class SendMoneyCommand implements Command {
     private Bank bank;
     private CommandInput command;
@@ -19,10 +21,12 @@ public class SendMoneyCommand implements Command {
         // get the account to send money from
         String receiverAccountIBAN = bank.getAliases().get(command.getReceiver());
 
-        Account senderAccount = bank.getAccount(command.getAccount());
-        Account receiverAccount = bank.getAccount(receiverAccountIBAN);
-
-        if (senderAccount == null || receiverAccount == null) {
+        Account senderAccount;
+        Account receiverAccount;
+        try {
+            senderAccount = bank.getAccount(command.getAccount());
+            receiverAccount = bank.getAccount(receiverAccountIBAN);
+        } catch (NoSuchElementException e) {
             return;
         }
 
