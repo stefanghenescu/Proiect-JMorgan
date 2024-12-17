@@ -20,7 +20,7 @@ public class Card {
         owner = ownerAccount;
     }
 
-    public static Card getCard(SetupBank bank, String number) {
+    public static Card getCard(Bank bank, String number) {
         return bank.getCards().get(number);
     }
 
@@ -59,6 +59,8 @@ public class Card {
     }
 
     private void freeze(long timestamp) {
+
+
         status = "frozen";
         Transaction transaction = new Transaction.TransactionBuilder(timestamp,
                 "You have reached the minimum amount of funds, the card will be frozen")

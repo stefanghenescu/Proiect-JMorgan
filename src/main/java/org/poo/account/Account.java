@@ -3,7 +3,7 @@ package org.poo.account;
 import lombok.Getter;
 import lombok.Setter;
 import org.poo.bank.Card;
-import org.poo.bank.SetupBank;
+import org.poo.bank.Bank;
 import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
@@ -43,7 +43,7 @@ public abstract class Account {
         cards.remove(card);
     }
 
-    public static Account getAccount(SetupBank bank, String iban) {
+    public static Account getAccount(Bank bank, String iban) {
         return bank.getAccounts().get(iban);
     }
 

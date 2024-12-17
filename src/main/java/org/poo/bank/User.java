@@ -42,7 +42,7 @@ public class User {
         transactions.add(transaction);
     }
 
-    public static User getUser(SetupBank bank, String email) {
+    public static User getUser(Bank bank, String email) {
         return bank.getUsers().get(email);
     }
 }

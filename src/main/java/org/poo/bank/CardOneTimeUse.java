@@ -1,9 +1,7 @@
 package org.poo.bank;
 
 import org.poo.account.Account;
-import org.poo.actions.Command;
 import org.poo.transactions.Transaction;
-import org.poo.utils.Utils;
 
 public class CardOneTimeUse extends Card {
     private static final int DIF_BALANCE = 30;

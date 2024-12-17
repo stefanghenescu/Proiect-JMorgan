@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.account.Account;
 import org.poo.bank.Card;
 import org.poo.bank.Commerciant;
-import org.poo.bank.SetupBank;
+import org.poo.bank.Bank;
 import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
@@ -17,7 +17,7 @@ import java.util.Map;
 public class JsonOutput {
     public static final ObjectMapper MAPPER = new ObjectMapper();
 
-    public static ObjectNode writeUsers(CommandInput command, SetupBank bank) {
+    public static ObjectNode writeUsers(CommandInput command, Bank bank) {
         ObjectNode usersArray = MAPPER.createObjectNode();
 
         usersArray.put("command", command.getCommand());
@@ -130,7 +130,7 @@ public class JsonOutput {
         return errorCard;
     }
 
-    public static ObjectNode writeTransactions(CommandInput commandInput,  SetupBank bank,
+    public static ObjectNode writeTransactions(CommandInput commandInput,  Bank bank,
                                                User user) {
         ObjectNode transactionsOutput = MAPPER.createObjectNode();
 

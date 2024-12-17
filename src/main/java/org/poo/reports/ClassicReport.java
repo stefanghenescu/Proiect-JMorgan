@@ -2,7 +2,7 @@ package org.poo.reports;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.account.Account;
-import org.poo.bank.SetupBank;
+import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
 import org.poo.utils.JsonOutput;
@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ClassicReport implements ReportStrategy {
     @Override
-    public ObjectNode generateReport(SetupBank bank, CommandInput command) {
+    public ObjectNode generateReport(Bank bank, CommandInput command) {
         Account account = bank.getAccounts().get(command.getAccount());
         if (account == null) {
             return JsonOutput.accountNotFound(command);
