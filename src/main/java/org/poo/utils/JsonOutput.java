@@ -17,6 +17,10 @@ import java.util.Map;
 public class JsonOutput {
     public static final ObjectMapper MAPPER = new ObjectMapper();
 
+    private JsonOutput() {
+        throw new UnsupportedOperationException("Utility class should not be instantiated");
+    }
+
     public static ObjectNode writeUsers(CommandInput command, Bank bank) {
         ObjectNode usersArray = MAPPER.createObjectNode();
 
