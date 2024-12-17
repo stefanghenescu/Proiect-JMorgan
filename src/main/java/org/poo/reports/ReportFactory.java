@@ -1,7 +1,11 @@
 package org.poo.reports;
 
 public class ReportFactory {
-    public static ReportStrategy getReportType(String reportType) {
+    private ReportFactory() {
+        throw new UnsupportedOperationException("Utility class should not be instantiated");
+    }
+
+    public static ReportStrategy getReportType(final String reportType) {
         return switch (reportType) {
             case "report" -> new ClassicReport();
             case "spendingsReport" -> new SpendingReport();
