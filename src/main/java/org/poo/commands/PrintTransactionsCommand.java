@@ -20,7 +20,7 @@ public class PrintTransactionsCommand implements Command {
 
     @Override
     public void execute() {
-        User transactionsUser = User.getUser(bank, command.getEmail());
+        User transactionsUser = bank.getUser(command.getEmail());
         ObjectNode transactionsArray = JsonOutput.writeTransactions(command, bank, transactionsUser);
         output.add(transactionsArray);
     }

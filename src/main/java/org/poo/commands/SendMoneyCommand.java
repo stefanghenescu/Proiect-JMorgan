@@ -1,6 +1,6 @@
 package org.poo.commands;
 
-import org.poo.account.Account;
+import org.poo.bank.account.Account;
 import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
@@ -19,8 +19,8 @@ public class SendMoneyCommand implements Command {
         // get the account to send money from
         String receiverAccountIBAN = bank.getAliases().get(command.getReceiver());
 
-        Account senderAccount = Account.getAccount(bank, command.getAccount());
-        Account receiverAccount = Account.getAccount(bank, receiverAccountIBAN);
+        Account senderAccount = bank.getAccount(command.getAccount());
+        Account receiverAccount = bank.getAccount(receiverAccountIBAN);
 
         if (senderAccount == null || receiverAccount == null) {
             return;

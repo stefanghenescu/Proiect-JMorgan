@@ -1,8 +1,8 @@
 package org.poo.commands;
 
-import org.poo.account.Account;
-import org.poo.bank.Card;
-import org.poo.bank.CardOneTimeUse;
+import org.poo.bank.account.Account;
+import org.poo.bank.cards.Card;
+import org.poo.bank.cards.CardOneTimeUse;
 import org.poo.bank.Bank;
 import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
@@ -19,9 +19,9 @@ public class CreateCardCommand implements Command {
 
     public void execute() {
         // get the account to add the card to
-        Account account = Account.getAccount(bank, command.getAccount());
+        Account account = bank.getAccount(command.getAccount());
 
-        User user = User.getUser(bank, command.getEmail());
+        User user = bank.getUser(command.getEmail());
         if (user == null)
             return;
 

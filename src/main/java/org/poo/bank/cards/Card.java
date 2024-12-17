@@ -1,8 +1,9 @@
-package org.poo.bank;
+package org.poo.bank.cards;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.poo.account.Account;
+import org.poo.bank.account.Account;
+import org.poo.bank.Bank;
 import org.poo.transactions.Transaction;
 import org.poo.utils.Utils;
 
@@ -18,10 +19,6 @@ public class Card {
         number = Utils.generateCardNumber();
         status = "active";
         owner = ownerAccount;
-    }
-
-    public static Card getCard(Bank bank, String number) {
-        return bank.getCards().get(number);
     }
 
     public boolean payOnline(double amount, long timestamp, String commerciant) {

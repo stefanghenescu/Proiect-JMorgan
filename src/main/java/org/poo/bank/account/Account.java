@@ -1,8 +1,8 @@
-package org.poo.account;
+package org.poo.bank.account;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.poo.bank.Card;
+import org.poo.bank.cards.Card;
 import org.poo.bank.Bank;
 import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 @Setter
 @Getter
-public abstract class Account {
+public class Account {
     public static final double DEFAULT_BALANCE = 0.0;
     private String iban;
     private double balance;
@@ -41,10 +41,6 @@ public abstract class Account {
 
     public void deleteCard(Card card) {
         cards.remove(card);
-    }
-
-    public static Account getAccount(Bank bank, String iban) {
-        return bank.getAccounts().get(iban);
     }
 
     public double withdraw(double amount) {

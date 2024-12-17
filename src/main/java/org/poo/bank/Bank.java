@@ -3,7 +3,8 @@ package org.poo.bank;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.Getter;
 import lombok.Setter;
-import org.poo.account.Account;
+import org.poo.bank.account.Account;
+import org.poo.bank.cards.Card;
 import org.poo.commands.*;
 import org.poo.fileio.*;
 
@@ -30,6 +31,18 @@ public class Bank {
                                     exchangeInput.getRate());
         }
         this.output = output;
+    }
+
+    public User getUser(String email) {
+        return users.get(email);
+    }
+
+    public Account getAccount(String iban) {
+        return accounts.get(iban);
+    }
+
+    public Card getCard(String cardNumber) {
+        return cards.get(cardNumber);
     }
 
     public void performCommands(CommandInput input) {

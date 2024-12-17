@@ -1,6 +1,6 @@
 package org.poo.commands;
 
-import org.poo.account.Account;
+import org.poo.bank.account.Account;
 import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
@@ -22,7 +22,7 @@ public class SplitPaymentCommand implements Command {
         String error = null;
 
         for (String accountIBAN : command.getAccounts().reversed()) {
-            Account account = Account.getAccount(bank, accountIBAN);
+            Account account = bank.getAccount(accountIBAN);
 
             if (account == null) {
                 return;
@@ -39,7 +39,7 @@ public class SplitPaymentCommand implements Command {
 
         if (everyonePaid) {
             for (String accountIBAN : command.getAccounts()) {
-                Account account = Account.getAccount(bank, accountIBAN);
+                Account account = bank.getAccount(accountIBAN);
                 double exchangeRate = bank.getExchangeRates().getRate(command.getCurrency(), account.getCurrency());
                 account.withdraw(amountPerPerson * exchangeRate);
             }
@@ -57,7 +57,7 @@ public class SplitPaymentCommand implements Command {
                 .build();
 
         for (String accountIBAN : command.getAccounts()) {
-            Account account = Account.getAccount(bank, accountIBAN);
+            Account account = bank.getAccount(accountIBAN);
             account.getOwner().addTransaction(transaction);
             account.addTransaction(transaction);
         }

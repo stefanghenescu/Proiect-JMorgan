@@ -1,6 +1,6 @@
 package org.poo.commands;
 
-import org.poo.account.Account;
+import org.poo.bank.account.Account;
 import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
 
@@ -16,7 +16,7 @@ public class AddFundsCommand implements Command {
     @Override
     public void execute() {
         // get the account to add funds to
-        Account account = Account.getAccount(bank, command.getAccount());
+        Account account = bank.getAccount(command.getAccount());
 
         if (account == null) {
             return;

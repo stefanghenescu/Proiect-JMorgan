@@ -1,7 +1,7 @@
 package org.poo.reports;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.poo.account.Account;
+import org.poo.bank.account.Account;
 import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;

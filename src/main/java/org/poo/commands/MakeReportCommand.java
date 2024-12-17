@@ -21,7 +21,6 @@ public class MakeReportCommand implements Command {
     @Override
     public void execute() {
         ReportStrategy reportStrategy = ReportFactory.getReportType(command.getCommand());
-        reportStrategy.generateReport(bank, command);
 
         ObjectNode report = reportStrategy.generateReport(bank, command);
         output.add(report);

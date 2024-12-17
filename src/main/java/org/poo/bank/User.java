@@ -1,7 +1,8 @@
 package org.poo.bank;
 
 import lombok.Getter;
-import org.poo.account.Account;
+import org.poo.bank.account.Account;
+import org.poo.bank.cards.Card;
 import org.poo.fileio.UserInput;
 import org.poo.transactions.Transaction;
 
@@ -40,9 +41,5 @@ public class User {
 
     public void addTransaction(Transaction transaction) {
         transactions.add(transaction);
-    }
-
-    public static User getUser(Bank bank, String email) {
-        return bank.getUsers().get(email);
     }
 }

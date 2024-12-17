@@ -1,7 +1,7 @@
 package org.poo.commands;
 
-import org.poo.account.Account;
-import org.poo.account.AccountFactory;
+import org.poo.bank.account.Account;
+import org.poo.bank.account.AccountFactory;
 import org.poo.bank.Bank;
 import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
@@ -26,7 +26,7 @@ public class AddAccountCommand implements Command{
 
         // get the user with the email from the command
         // add the account to that user
-        User userToAddAccount = User.getUser(bank, userEmail);
+        User userToAddAccount = bank.getUser(userEmail);
         if (userToAddAccount == null)
             return;
 

@@ -1,6 +1,5 @@
 package org.poo.transactions;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -32,20 +31,20 @@ public class Transaction {
     private final String amountString;
 
     private Transaction(TransactionBuilder builder) {
-        this.timestamp = builder.timestamp;
-        this.description = builder.description;
-        this.card = builder.card;
-        this.cardHolder = builder.cardHolder;
-        this.account = builder.account;
-        this.senderIBAN = builder.senderIBAN;
-        this.receiverIBAN = builder.receiverIBAN;
-        this.amount = builder.amount;
-        this.amountString = builder.amountString;
-        this.transferType = builder.transferType;
-        this.commerciant = builder.commerciant;
-        this.currency = builder.currency;
-        this.involvedAccounts = builder.involvedAccounts;
-        this.error = builder.error;
+        timestamp = builder.timestamp;
+        description = builder.description;
+        card = builder.card;
+        cardHolder = builder.cardHolder;
+        account = builder.account;
+        senderIBAN = builder.senderIBAN;
+        receiverIBAN = builder.receiverIBAN;
+        amount = builder.amount;
+        amountString = builder.amountString;
+        transferType = builder.transferType;
+        commerciant = builder.commerciant;
+        currency = builder.currency;
+        involvedAccounts = builder.involvedAccounts;
+        error = builder.error;
     }
 
     @JsonProperty("amount")

@@ -1,7 +1,7 @@
 package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.poo.bank.Card;
+import org.poo.bank.cards.Card;
 import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.JsonOutput;
@@ -19,7 +19,7 @@ public class CheckCardStatusCommand implements Command {
 
     @Override
     public void execute() {
-        Card card = Card.getCard(bank, command.getCardNumber());
+        Card card = bank.getCard(command.getCardNumber());
 
         if (card == null) {
             output.add(JsonOutput.cardNotFound(command));

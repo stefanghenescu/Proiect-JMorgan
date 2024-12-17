@@ -1,7 +1,7 @@
 package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.poo.account.Account;
+import org.poo.bank.account.Account;
 import org.poo.bank.Bank;
 import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
@@ -24,14 +24,14 @@ public class DeleteAccountCommand implements Command {
         String accountIBAN = bank.getAliases().get(command.getAccount());
 
         // get the account to delete
-        Account account = Account.getAccount(bank, accountIBAN);
+        Account account = bank.getAccount(accountIBAN);
 
         if (account == null) {
             return;
         }
 
         // get the user to delete the account from
-        User user = User.getUser(bank, command.getEmail());
+        User user = bank.getUser(command.getEmail());
 
         if (user == null) {
             return;

@@ -1,6 +1,6 @@
-package org.poo.bank;
+package org.poo.bank.cards;
 
-import org.poo.account.Account;
+import org.poo.bank.account.Account;
 import org.poo.transactions.Transaction;
 
 public class CardOneTimeUse extends Card {

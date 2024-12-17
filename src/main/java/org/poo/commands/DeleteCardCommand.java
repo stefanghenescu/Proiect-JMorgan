@@ -1,7 +1,7 @@
 package org.poo.commands;
 
-import org.poo.account.Account;
-import org.poo.bank.Card;
+import org.poo.bank.account.Account;
+import org.poo.bank.cards.Card;
 import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
@@ -18,7 +18,7 @@ public class DeleteCardCommand implements Command {
     @Override
     public void execute() {
         // get the card to delete
-        Card card = Card.getCard(bank, command.getCardNumber());
+        Card card = bank.getCard(command.getCardNumber());
 
         if (card == null) {
             return;

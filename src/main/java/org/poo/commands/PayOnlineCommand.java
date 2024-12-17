@@ -1,8 +1,8 @@
 package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.poo.account.Account;
-import org.poo.bank.Card;
+import org.poo.bank.account.Account;
+import org.poo.bank.cards.Card;
 import org.poo.bank.Bank;
 import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
@@ -21,8 +21,8 @@ public class PayOnlineCommand implements Command {
 
     @Override
     public void execute() {
-        Card card = Card.getCard(bank, command.getCardNumber());
-        User cardOwnerUser = User.getUser(bank, command.getEmail());
+        Card card = bank.getCard(command.getCardNumber());
+        User cardOwnerUser = bank.getUser(command.getEmail());
 
         if (card == null) {
             output.add(JsonOutput.cardNotFound(command));

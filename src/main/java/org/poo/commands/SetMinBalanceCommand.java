@@ -1,6 +1,6 @@
 package org.poo.commands;
 
-import org.poo.account.Account;
+import org.poo.bank.account.Account;
 import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
 
@@ -18,9 +18,10 @@ public class SetMinBalanceCommand implements Command {
         String accountIBAN = bank.getAliases().get(command.getAccount());
 
         // get the account to set the minimum balance
-        Account account = Account.getAccount(bank, accountIBAN);
-
-        if (account == null) {
+        Account account;
+        try {
+            account = bank.getAccount(accountIBAN);
+        } catch (NullPointerException e) {
             return;
         }
 
