@@ -1,68 +1,39 @@
 package org.poo.bank.cards;
 
+import org.poo.bank.Bank;
 import org.poo.bank.account.Account;
+import org.poo.commands.CreateCardCommand;
+import org.poo.commands.DeleteCardCommand;
+import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
 
 public class CardOneTimeUse extends Card {
     private static final int DIF_BALANCE = 30;
-    public CardOneTimeUse(final Account ownerAccount) {
+    private final Bank bank;
+    public CardOneTimeUse(final Account ownerAccount, final Bank bank) {
         super(ownerAccount);
+        this.bank = bank;
     }
 
     @Override
-    public boolean payOnline(final double amount, final long timestamp, final String commerciant) {
-        Transaction transaction;
-        boolean statusPayment = false;
-        if (getStatus().equals("frozen")) {
-            // add transaction with an error message
-            transaction = new Transaction.TransactionBuilder(timestamp,
-                    "The card is frozen")
-                    .build();
-        } else if (getOwner().withdraw(amount) == 0) {
-            // add transaction with an error message
-            transaction = new Transaction.TransactionBuilder(timestamp,
-                    "Insufficient funds")
-                    .build();
-        } else {
-            transaction = new Transaction.TransactionBuilder(timestamp,
-                    "Card payment")
-                    .amount(amount)
-                    .commerciant(commerciant)
-                    .build();
-            statusPayment = true;
+    public boolean payOnline(final double amount, final CommandInput command) {
+        boolean successPayment = super.payOnline(amount, command);
+        if (successPayment) {
+            createNewCard(command);
         }
-
-        // add transaction to the owner of the account that owns the card :)
-        getOwner().getOwner().addTransaction(transaction);
-
-        // add transaction to the account
-        getOwner().addTransaction(transaction);
-
-        return statusPayment;
+        return successPayment;
     }
 
-    public void check(final long timestamp) {
-        if (getOwner().getBalance() <= getOwner().getMinBalance()) {
-            freeze(timestamp);
-        } else if (getOwner().getBalance() - getOwner().getMinBalance() <= DIF_BALANCE) {
-            warning();
-        }
-    }
+    private void createNewCard(CommandInput command) {
+        // After paying with the card, delete it
+        DeleteCardCommand deleteCardCommand = new DeleteCardCommand(bank, command);
+        deleteCardCommand.execute();
 
-    private void freeze(final long timestamp) {
-        setStatus("frozen");
-        Transaction transaction = new Transaction.TransactionBuilder(timestamp,
-                "You have reached the minimum amount of funds, the card will be frozen")
-                .build();
+        // Create a new card
+        command.setCommand("createOneTimeCard");
+        command.setAccount(getOwner().getIban());
 
-        // add transaction to the owner of the account that owns the card :)
-        getOwner().getOwner().addTransaction(transaction);
-
-        // add transaction to the account
-        getOwner().addTransaction(transaction);
-    }
-
-    private void warning() {
-        setStatus("warning");
+        CreateCardCommand createCardCommand = new CreateCardCommand(bank, command);
+        createCardCommand.execute();
     }
 }

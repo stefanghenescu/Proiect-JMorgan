@@ -41,7 +41,7 @@ public class CreateCardCommand implements Command {
 
         Card card;
         if (command.getCommand().equals("createOneTimeCard")) {
-            card = new CardOneTimeUse(account);
+            card = new CardOneTimeUse(account, bank);
         } else {
             card = new Card(account);
         }

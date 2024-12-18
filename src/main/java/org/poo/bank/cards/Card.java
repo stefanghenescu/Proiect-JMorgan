@@ -2,7 +2,9 @@ package org.poo.bank.cards;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.poo.bank.Bank;
 import org.poo.bank.account.Account;
+import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
 import org.poo.utils.Utils;
 
@@ -20,8 +22,12 @@ public class Card {
         owner = ownerAccount;
     }
 
-    public boolean payOnline(final double amount, final long timestamp, final String commerciant) {
+    public boolean payOnline(final double amount, final CommandInput command) {
         Transaction transaction;
+        long timestamp = command.getTimestamp();
+        String commerciant = command.getCommerciant();
+        boolean successPayment = false;
+
         if (status.equals("frozen")) {
             // add transaction with an error message
             transaction = new Transaction.TransactionBuilder(timestamp,
@@ -38,12 +44,13 @@ public class Card {
                     .amount(amount)
                     .commerciant(commerciant)
                     .build();
+
+            successPayment = true;
         }
 
         owner.getOwner().addTransaction(transaction);
         owner.addTransaction(transaction);
-
-        return false;
+        return successPayment;
     }
 
     public void check(final long timestamp) {
@@ -54,7 +61,7 @@ public class Card {
         }
     }
 
-    private void freeze(final long timestamp) {
+    protected void freeze(final long timestamp) {
         status = "frozen";
         Transaction transaction = new Transaction.TransactionBuilder(timestamp,
                 "You have reached the minimum amount of funds, the card will be frozen")
@@ -64,7 +71,7 @@ public class Card {
         owner.addTransaction(transaction);
     }
 
-    private void warning() {
+    protected void warning() {
         status = "warning";
     }
 }

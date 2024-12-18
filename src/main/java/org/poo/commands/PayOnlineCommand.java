@@ -43,20 +43,6 @@ public class PayOnlineCommand implements Command {
                 cardAccount.getCurrency());
         double amount = command.getAmount() * exchangeRate;
 
-        boolean paidWithOneTimeCard = card.payOnline(amount, command.getTimestamp(),
-                command.getCommerciant());
-
-        if (paidWithOneTimeCard) {
-            // delete the card
-            DeleteCardCommand deleteCardCommand = new DeleteCardCommand(bank, command);
-            deleteCardCommand.execute();
-
-            // create a new one-time card
-            command.setCommand("createOneTimeCard");
-            command.setAccount(cardAccount.getIban());
-
-            CreateCardCommand createCardCommand = new CreateCardCommand(bank, command);
-            createCardCommand.execute();
-        }
+        card.payOnline(amount, command);
     }
 }
