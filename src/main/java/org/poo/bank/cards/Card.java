@@ -9,6 +9,10 @@ import org.poo.utils.Utils;
 
 @Setter
 @Getter
+
+/**
+ * Class that represents a card.
+ */
 public class Card {
     private static final int DIF_BALANCE = 30;
     private String status;
@@ -21,6 +25,14 @@ public class Card {
         owner = ownerAccount;
     }
 
+    /**
+     * Method for paying online with the card. This method in different for each type of card.
+     * Moreover, it adds a transaction to the owner of the card (account) and to the owner of the
+     * account (user).
+     * @param amount the amount of money to be paid
+     * @param command the command that contains the information about the payment
+     * @return true if the payment was successful, false otherwise
+     */
     public boolean payOnline(final double amount, final CommandInput command) {
         Transaction transaction;
         long timestamp = command.getTimestamp();
@@ -38,6 +50,7 @@ public class Card {
                     "Insufficient funds")
                     .build();
         } else {
+            // add transaction with the payment
             transaction = new Transaction.TransactionBuilder(timestamp,
                     "Card payment")
                     .amount(amount)
@@ -47,11 +60,17 @@ public class Card {
             successPayment = true;
         }
 
+        // owner is the account and owner.getOwner() is the user to where the transaction is added
         owner.getOwner().addTransaction(transaction);
         owner.addTransaction(transaction);
         return successPayment;
     }
 
+    /**
+     * Method that checks if the card needs to be frozen or if the status has to become warning.
+     * @param timestamp the timestamp of the check. It is used for when adding a transaction in
+     *                  order to know when the card was frozen
+     */
     public void check(final long timestamp) {
         if (owner.getBalance() <= owner.getMinBalance()) {
             freeze(timestamp);
@@ -60,6 +79,11 @@ public class Card {
         }
     }
 
+    /**
+     * Method that freezes the card and adds a transaction to the owner of the card (account)
+     * that the card was frozen.
+     * @param timestamp the timestamp of the freeze
+     */
     protected void freeze(final long timestamp) {
         status = "frozen";
         Transaction transaction = new Transaction.TransactionBuilder(timestamp,
@@ -70,6 +94,9 @@ public class Card {
         owner.addTransaction(transaction);
     }
 
+    /**
+     * Method that sets the status of the card to warning as the balance is close to the minimum
+     */
     protected void warning() {
         status = "warning";
     }

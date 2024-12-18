@@ -82,7 +82,7 @@ public final class Main {
 
         // perform the commands
         for (CommandInput command : inputData.getCommands()) {
-            bank.performCommands(command);
+            bank.performCommand(command);
         }
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
