@@ -5,10 +5,8 @@ import org.poo.bank.account.Account;
 import org.poo.commands.CreateCardCommand;
 import org.poo.commands.DeleteCardCommand;
 import org.poo.fileio.CommandInput;
-import org.poo.transactions.Transaction;
 
 public class CardOneTimeUse extends Card {
-    private static final int DIF_BALANCE = 30;
     private final Bank bank;
     public CardOneTimeUse(final Account ownerAccount, final Bank bank) {
         super(ownerAccount);
@@ -24,7 +22,7 @@ public class CardOneTimeUse extends Card {
         return successPayment;
     }
 
-    private void createNewCard(CommandInput command) {
+    private void createNewCard(final CommandInput command) {
         // After paying with the card, delete it
         DeleteCardCommand deleteCardCommand = new DeleteCardCommand(bank, command);
         deleteCardCommand.execute();

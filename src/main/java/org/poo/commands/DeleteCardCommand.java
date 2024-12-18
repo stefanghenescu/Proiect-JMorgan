@@ -9,8 +9,8 @@ import org.poo.transactions.Transaction;
 import java.util.NoSuchElementException;
 
 public class DeleteCardCommand implements Command {
-    private Bank bank;
-    private CommandInput command;
+    private final Bank bank;
+    private final CommandInput command;
 
     public DeleteCardCommand(final Bank bank, final CommandInput command) {
         this.bank = bank;

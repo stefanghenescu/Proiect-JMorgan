@@ -8,9 +8,9 @@ import org.poo.reports.ReportFactory;
 import org.poo.reports.ReportStrategy;
 
 public class MakeReportCommand implements Command {
-    private Bank bank;
-    private CommandInput command;
-    private ArrayNode output;
+    private final Bank bank;
+    private final CommandInput command;
+    private final ArrayNode output;
 
     public MakeReportCommand(final Bank bank, final CommandInput command, final ArrayNode output) {
         this.bank = bank;

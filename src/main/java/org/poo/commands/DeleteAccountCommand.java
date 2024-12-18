@@ -11,9 +11,9 @@ import org.poo.utils.JsonOutput;
 import java.util.NoSuchElementException;
 
 public class DeleteAccountCommand implements Command {
-    private Bank bank;
-    private CommandInput command;
-    private ArrayNode output;
+    private final Bank bank;
+    private final CommandInput command;
+    private final ArrayNode output;
 
     public DeleteAccountCommand(final Bank bank, final CommandInput command,
                                 final ArrayNode output) {

@@ -9,9 +9,9 @@ import org.poo.transactions.Transaction;
 import org.poo.utils.JsonOutput;
 
 public class AddInterestCommand implements Command {
-    private Bank bank;
-    private CommandInput command;
-    private ArrayNode output;
+    private final Bank bank;
+    private final CommandInput command;
+    private final ArrayNode output;
 
     public AddInterestCommand(final Bank bank, final CommandInput command, final ArrayNode output) {
         this.bank = bank;

@@ -7,8 +7,8 @@ import org.poo.fileio.CommandInput;
 import java.util.NoSuchElementException;
 
 public class SetMinBalanceCommand implements Command {
-    private Bank bank;
-    private CommandInput command;
+    private final Bank bank;
+    private final CommandInput command;
 
     public SetMinBalanceCommand(final Bank bank, final CommandInput command) {
         this.bank = bank;

@@ -9,8 +9,8 @@ import java.util.NoSuchElementException;
 
 public class SendMoneyCommand implements Command {
     private static final double ROUNDING = 10000.0;
-    private Bank bank;
-    private CommandInput command;
+    private final Bank bank;
+    private final CommandInput command;
 
     public SendMoneyCommand(final Bank bank, final CommandInput command) {
         this.bank = bank;

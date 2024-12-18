@@ -11,8 +11,8 @@ import org.poo.transactions.Transaction;
 import java.util.NoSuchElementException;
 
 public class CreateCardCommand implements Command {
-    private Bank bank;
-    private CommandInput command;
+    private final Bank bank;
+    private final CommandInput command;
 
     public CreateCardCommand(final Bank bank, final CommandInput command) {
         this.bank = bank;

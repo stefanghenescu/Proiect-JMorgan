@@ -7,9 +7,9 @@ import org.poo.fileio.CommandInput;
 import org.poo.utils.JsonOutput;
 
 public class PrintUsersCommand implements Command {
-    private Bank bank;
-    private CommandInput command;
-    private ArrayNode output;
+    private final Bank bank;
+    private final CommandInput command;
+    private final ArrayNode output;
 
     public PrintUsersCommand(final Bank bank, final CommandInput command, final ArrayNode output) {
         this.bank = bank;

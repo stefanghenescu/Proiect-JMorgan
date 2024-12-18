@@ -11,11 +11,11 @@ import java.util.List;
 
 @Getter
 public class User {
-    private String firstName;
-    private String lastName;
-    private String email;
-    private ArrayList<Account> accounts = new ArrayList<>();
-    private List<Transaction> transactions = new ArrayList<>();
+    private final String firstName;
+    private final String lastName;
+    private final String email;
+    private final ArrayList<Account> accounts = new ArrayList<>();
+    private final List<Transaction> transactions = new ArrayList<>();
 
     public User(final UserInput userInput) {
         firstName = userInput.getFirstName();

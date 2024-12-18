@@ -9,8 +9,8 @@ import java.util.NoSuchElementException;
 
 public class SplitPaymentCommand implements Command {
     private static final String SPLIT_PAYMENT_MESSAGE = "Split payment of %.2f %s";
-    private Bank bank;
-    private CommandInput command;
+    private final Bank bank;
+    private final CommandInput command;
 
     public SplitPaymentCommand(final Bank bank, final CommandInput command) {
         this.bank = bank;
