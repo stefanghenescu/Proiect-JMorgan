@@ -5,7 +5,7 @@
 
 This project implements a simplified online banking system using OOP principles in Java. The system 
 focuses on key banking features such as managing users, accounts, cards, transactions and reports.
-The design emphasizes modularity and scalability, following design patterns like Factory, Builder,
+The design highlights modularity and scalability, following design patterns like Factory, Builder,
 Strategy, Command.
 
 ## Package Structure
@@ -96,16 +96,17 @@ generated using the `TransactionBuilder` and stored by users and accounts.
   sending money, generating reports, paying online, etc.).
 - **Builder Pattern**: Used to create `Transaction` objects, setting various properties 
   like transaction amount, involved accounts, currency etc.
-- **Factory Pattern**: The `AccountFactory` creates specific account types (e.g., `ClassicAccount`, `SavingsAccount`) based on user input.
+- **Factory Pattern**: The `AccountFactory` creates specific account types (e.g. 
+  `ClassicAccount`, `SavingsAccount`) based on user input.
 - **Strategy Pattern**: Used in report generation, providing flexibility to format and generate different reports.
 
 ## Feedback
 
 Developing this project provided experience with OOP concepts and design patterns.
-The modular architecture facilitated clean code management and the ability to extend the code in 
+The modular implementation facilitated the ability to extend the code in 
 the future. As and example, managing various transaction types and how they are made can be 
 expanded as I use a builder pattern and new attributes can be added. Moreover, I can add more 
 types of accounts as I use a factory pattern to create them.
 
-Overall, the project was a rewarding opportunity to apply OOP principles to create a scalable, 
+Overall, the project was a great opportunity to apply OOP principles to create a scalable, 
 maintainable banking system.
