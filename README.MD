@@ -4,8 +4,10 @@
 ## Overview
 
 This project implements a simplified online banking system using OOP principles in Java. The system 
-focuses on key banking features such as managing users, accounts, cards, transactions and reports.
-The design highlights modularity and scalability, following design patterns like Factory, Builder,
+focuses on key banking elements such as users, accounts, cards, transactions and 
+reports. Moreover, it supports various operations like adding accounts, transferring money, online 
+payments, generating reports and more. The design highlights modularity and scalability, 
+following design patterns like Factory, Builder,
 Strategy, Command.
 
 ## Package Structure
@@ -27,15 +29,16 @@ Contains different types of accounts classes and a factory to create them:
 - **`Account`**: Base class that defines core functionalities.
 - **`ClassicAccount`**: Represents a standard bank account without support for interest rate 
   (this will generate an error). This class extends the Account class.
-- **`SavingsAccount`**: Supports everything an Account does, plus interest rate calculations.
-- **`AccountFactory`**: Implements the Factory design pattern to create different account types (e.g., ClassicAccount, SavingsAccount).
+- **`SavingsAccount`**:This class extends the Account class and has logic for interest rate.
+- **`AccountFactory`**: Implements the Factory design pattern to create different account types 
+  (e.g.  ClassicAccount, SavingsAccount).
 
 #### 1.2`cards` package
 
 Contains classes for types of cards:
 
 - **`Card`**: Base class representing a classic bank card.
-- **`CardOneTimeUse`**: Represents disposable one-time-use cards that extends the Card class.
+- **`CardOneTimeUse`**: Represents one-time-use cards that extends the Card class.
 
 ### 2.`commands` package
 
@@ -65,7 +68,7 @@ This package handles transactions and how are they built using builder pattern.
 - **`Transaction`**: Represents a transaction, storing details about it.  
 Contains class:
   - **`TransactionBuilder`**: Implements the Builder pattern to create `Transaction` objects,
-    setting various properties like transaction amount, involved accounts, currency etc.
+    setting various attributes like transaction amount, involved accounts, currency etc.
 
 ### 5.`utils` package
 
