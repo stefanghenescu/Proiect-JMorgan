@@ -3,7 +3,7 @@ package org.poo.bank;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.Getter;
 import lombok.Setter;
-import org.poo.bank.account.Account;
+import org.poo.bank.accounts.Account;
 import org.poo.bank.cards.Card;
 import org.poo.commands.*;
 import org.poo.fileio.*;

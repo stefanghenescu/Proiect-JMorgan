@@ -1,6 +1,6 @@
 package org.poo.reports;
 
-public class ReportFactory {
+public final class ReportFactory {
     private ReportFactory() {
         throw new UnsupportedOperationException("Utility class should not be instantiated");
     }

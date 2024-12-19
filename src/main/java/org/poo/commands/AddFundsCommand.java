@@ -1,6 +1,6 @@
 package org.poo.commands;
 
-import org.poo.bank.account.Account;
+import org.poo.bank.accounts.Account;
 import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
 

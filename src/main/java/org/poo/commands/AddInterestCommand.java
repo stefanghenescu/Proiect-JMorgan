@@ -1,8 +1,8 @@
 package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.poo.bank.account.Account;
-import org.poo.bank.account.SavingsAccount;
+import org.poo.bank.accounts.Account;
+import org.poo.bank.accounts.SavingsAccount;
 import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;

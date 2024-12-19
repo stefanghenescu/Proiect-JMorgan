@@ -2,7 +2,7 @@ package org.poo.bank.cards;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.poo.bank.account.Account;
+import org.poo.bank.accounts.Account;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
 import org.poo.utils.Utils;

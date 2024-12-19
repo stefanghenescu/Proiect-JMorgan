@@ -1,4 +1,4 @@
-package org.poo.bank.account;
+package org.poo.bank.accounts;
 
 import org.poo.fileio.CommandInput;
 
