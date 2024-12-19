@@ -38,9 +38,9 @@ public class CardOneTimeUse extends Card {
         DeleteCardCommand deleteCardCommand = new DeleteCardCommand(bank, command);
         deleteCardCommand.execute();
 
-        // Create a new card
-        // The command name is "createOneTimeCard" in order to create a one-time use card
-        // Except this, the command is the same as the one that was used to pay online
+        // Create a new card. The command name is "createOneTimeCard" in order to create a
+        // one-time use card. Except this, the command is the same as the one that was used to pay
+        // online
         command.setCommand("createOneTimeCard");
         command.setAccount(getOwner().getIban());
 

@@ -14,7 +14,19 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.TreeMap;
 
+/**
+ * Class responsible for generating a spending report.
+ * Implements the ReportStrategy interface. This class is part of the Strategy design pattern.
+ */
 public class SpendingReport implements ReportStrategy {
+    /**
+     * Method responsible for generating a spending report.
+     * If the account is not found, an error message is returned.
+     * If the account is not eligible for a spending report, an error message is returned.
+     * @param bank the bank that contains the account data
+     * @param command the command input that contains information about the report
+     * @return the spending report as a JSON object
+     */
     @Override
     public ObjectNode generateReport(final Bank bank, final CommandInput command) {
         Account account;
@@ -33,6 +45,7 @@ public class SpendingReport implements ReportStrategy {
         // use TreeMap to sort the commerciants by name
         Map<String, Commerciant> commerciants = new TreeMap<>();
 
+        // Add transactions to the list and filter them by timestamp
         for (Transaction transaction : account.getTransactions()) {
             addTransaction(transaction, transactions, commerciants, command);
         }

@@ -11,7 +11,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * Class responsible for generating a classic report.
+ * Implements the ReportStrategy interface. This class is part of the Strategy design pattern.
+ */
 public class ClassicReport implements ReportStrategy {
+    /**
+     * Method responsible for generating a classic report.
+     * If the account is not found, an error message is returned.
+     * @param bank the bank that contains the account data
+     * @param command the command input that contains information about the report
+     * @return the classic report as a JSON object
+     */
     @Override
     public ObjectNode generateReport(final Bank bank, final CommandInput command) {
         Account account;
@@ -23,6 +34,7 @@ public class ClassicReport implements ReportStrategy {
 
         List<Transaction> transactions = new ArrayList<>();
 
+        // Add transactions to the list and filter them by timestamp
         for (Transaction transaction : account.getTransactions()) {
             addTransaction(transaction, transactions, command);
         }

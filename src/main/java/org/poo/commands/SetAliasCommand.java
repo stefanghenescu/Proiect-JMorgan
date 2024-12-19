@@ -3,7 +3,11 @@ package org.poo.commands;
 import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
 
-public class SetAliasCommand implements Command {
+/**
+ * Class responsible for setting an alias to an account.
+ * Implements the Command interface. This class is part of the Command design pattern.
+ */
+public final class SetAliasCommand implements Command {
     private final Bank bank;
     private final CommandInput command;
 
@@ -12,8 +16,13 @@ public class SetAliasCommand implements Command {
         this.command = command;
     }
 
+    /**
+     * Method responsible for setting an alias to an account.
+     * The alias is added to the bank's aliases map.
+     */
     @Override
     public void execute() {
+        // Alias is the key and account IBAN is the value
         bank.getAliases().put(command.getAlias(), command.getAccount());
     }
 }

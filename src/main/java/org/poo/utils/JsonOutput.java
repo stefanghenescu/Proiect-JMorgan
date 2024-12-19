@@ -14,6 +14,9 @@ import org.poo.transactions.Transaction;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class responsible for writing the output in JSON format.
+ */
 public final class JsonOutput {
     public static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -21,6 +24,12 @@ public final class JsonOutput {
         throw new UnsupportedOperationException("Utility class should not be instantiated");
     }
 
+    /**
+     * Method responsible for writing the users in JSON format.
+     * @param command the command input that contains information about the command
+     * @param bank the bank that contains the user data
+     * @return the users as a JSON object
+     */
     public static ObjectNode writeUsers(final CommandInput command, final Bank bank) {
         ObjectNode usersArray = MAPPER.createObjectNode();
 
@@ -37,6 +46,11 @@ public final class JsonOutput {
         return usersArray;
     }
 
+    /**
+     * Helper method responsible for writing one user in JSON format.
+     * @param user the user to be written
+     * @return the user as a JSON object
+     */
     private static ObjectNode writeOneUser(final User user) {
         ObjectNode userNode = MAPPER.createObjectNode();
 
@@ -55,6 +69,11 @@ public final class JsonOutput {
         return userNode;
     }
 
+    /**
+     * Helper method responsible for writing an account in JSON format.
+     * @param account the account to be written
+     * @return the account as a JSON object
+     */
     private static ObjectNode writeAccount(final Account account) {
         ObjectNode accountNode = MAPPER.createObjectNode();
 
@@ -73,6 +92,25 @@ public final class JsonOutput {
         return accountNode;
     }
 
+    /**
+     * Helper method responsible for writing a card in JSON format.
+     * @param card the card to be written
+     * @return the card as a JSON object
+     */
+    private static ObjectNode writeCard(final Card card) {
+        ObjectNode cardNode = MAPPER.createObjectNode();
+
+        cardNode.put("cardNumber", card.getNumber());
+        cardNode.put("status", card.getStatus());
+
+        return cardNode;
+    }
+
+    /**
+     * Method responsible for writing an error message when an account is not found.
+     * @param command  the command input that contains information about the command
+     * @return the error message as a JSON object
+     */
     public static ObjectNode accountNotFound(final CommandInput command) {
         ObjectNode errorAccount = MAPPER.createObjectNode();
         ObjectNode output = MAPPER.createObjectNode();
@@ -88,22 +126,21 @@ public final class JsonOutput {
         return errorAccount;
     }
 
-    private static ObjectNode writeCard(final Card card) {
-        ObjectNode cardNode = MAPPER.createObjectNode();
-
-        cardNode.put("cardNumber", card.getNumber());
-        cardNode.put("status", card.getStatus());
-
-        return cardNode;
-    }
-
+    /**
+     * Method responsible for writing a JSON output for deleting an account. If the account has a
+     * balance different from 0,an error message is added to the output.
+     * @param command the command input that contains information about the command
+     * @param account the account to be deleted
+     * @return the output as a JSON object
+     */
     public static ObjectNode eraseAccount(final CommandInput command, final Account account) {
         ObjectNode deleteAccount = MAPPER.createObjectNode();
         ObjectNode output = MAPPER.createObjectNode();
 
         deleteAccount.put("command", command.getCommand());
 
-
+        // check if the account has a balance different from 0
+        // if it has, add an error message to the output
         if (account.getBalance() != 0) {
             output.put("error", "Account couldn't be deleted - see org.poo.transactions for "
                     + "details");
@@ -119,6 +156,11 @@ public final class JsonOutput {
         return deleteAccount;
     }
 
+    /**
+     * Method responsible for writing an error message when a card is not found.
+     * @param command the command input that contains information about the command
+     * @return the error message as a JSON object
+     */
     public static ObjectNode cardNotFound(final CommandInput command) {
         ObjectNode errorCard = MAPPER.createObjectNode();
         ObjectNode output = MAPPER.createObjectNode();
@@ -134,6 +176,12 @@ public final class JsonOutput {
         return errorCard;
     }
 
+    /**
+     * Method responsible for writing a JSON output for writing transactions.
+     * @param commandInput the command input that contains information about the command
+     * @param user the user that contains the transactions
+     * @return the transactions as a JSON object
+     */
     public static ObjectNode writeTransactions(final CommandInput commandInput, final User user) {
         ObjectNode transactionsOutput = MAPPER.createObjectNode();
 
@@ -152,10 +200,20 @@ public final class JsonOutput {
         return  transactionsOutput;
     }
 
-    public static ObjectNode writeTransaction(final Transaction transaction) {
+    /**
+     * Helper method responsible for writing a transaction in JSON format.
+     * @param transaction the transaction to be written
+     * @return the transaction as a JSON object
+     */
+    private static ObjectNode writeTransaction(final Transaction transaction) {
         return MAPPER.valueToTree(transaction);
     }
 
+    /**
+     * Method responsible for writing an error message when account is savings.
+     * @param command the command input that contains information about the command
+     * @return the error message as a JSON object
+     */
     public static ObjectNode writeErrorSavingAccount(final CommandInput command) {
         ObjectNode errorSavingAccount = MAPPER.createObjectNode();
         ObjectNode output = MAPPER.createObjectNode();
@@ -171,6 +229,13 @@ public final class JsonOutput {
         return errorSavingAccount;
     }
 
+    /**
+     * Method responsible for writing a JSON output for a classic report.
+     * @param command the command input that contains information about the command
+     * @param account the account that contains the transactions
+     * @param transactions the transactions to be written
+     * @return the classic report as a JSON object
+     */
     public static ObjectNode writeClassicReport(final CommandInput command, final Account account,
                                                 final List<Transaction> transactions) {
         ObjectNode report = MAPPER.createObjectNode();
@@ -195,6 +260,14 @@ public final class JsonOutput {
         return report;
     }
 
+    /**
+     * Method responsible for writing a JSON output for a spending report.
+     * @param command the command input that contains information about the command
+     * @param account the account that contains the transactions
+     * @param transactions the transactions to be written
+     * @param commerciants the commerciants that received money
+     * @return the spending report as a JSON object
+     */
     public static ObjectNode writeSpendingReport(final CommandInput command, final Account account,
                                                  final List<Transaction> transactions,
                                                  final Map<String, Commerciant> commerciants) {
@@ -216,6 +289,7 @@ public final class JsonOutput {
 
         ArrayNode commerciansArray = MAPPER.createArrayNode();
 
+        // write the commerciants that received money
         for (Commerciant commerciant : commerciants.values()) {
             ObjectNode commerciantJson = MAPPER.createObjectNode();
 
@@ -233,6 +307,12 @@ public final class JsonOutput {
         return report;
     }
 
+    /**
+     * Method responsible for writing an error message when an account is not eligible for a
+     * spending report.
+     * @param command the command input that contains information about the command
+     * @return the error message as a JSON object
+     */
     public static ObjectNode accountNotEligible(final CommandInput command) {
         ObjectNode errorAccount = MAPPER.createObjectNode();
         ObjectNode output = MAPPER.createObjectNode();

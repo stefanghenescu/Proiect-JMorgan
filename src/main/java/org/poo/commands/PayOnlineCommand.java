@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.bank.accounts.Account;
 import org.poo.bank.cards.Card;
 import org.poo.bank.Bank;
-import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.JsonOutput;
 

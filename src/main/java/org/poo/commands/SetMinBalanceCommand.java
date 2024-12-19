@@ -6,7 +6,11 @@ import org.poo.fileio.CommandInput;
 
 import java.util.NoSuchElementException;
 
-public class SetMinBalanceCommand implements Command {
+/**
+ * Class responsible for setting the minimum balance for an account.
+ * Implements the Command interface. This class is part of the Command design pattern.
+ */
+public final class SetMinBalanceCommand implements Command {
     private final Bank bank;
     private final CommandInput command;
 
@@ -15,8 +19,16 @@ public class SetMinBalanceCommand implements Command {
         this.command = command;
     }
 
+    /**
+     * This method executes the process of setting the minimum balance for an account.
+     */
     @Override
     public void execute() {
+        /**
+         * get the IBAN of the account
+         * aliases have the IBAN of the account and also the aliases of the account as keys for
+         * the same IBAN
+         */
         String accountIBAN = bank.getAliases().get(command.getAccount());
 
         // get the account to set the minimum balance
