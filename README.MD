@@ -20,10 +20,9 @@ Contains essential components of the banking system:
 - **`Commerciant`**: Handles commerciants involved in transactions.
 - **`ExchangeRates`**: Provides exchange rate logic for converting between currencies.
 
-### 1.1`accounts` package
+#### 1.1`accounts` package
 
-Defines account-related features and supports operations such as balance management and interest 
-rate:
+Contains different types of accounts classes and a factory to create them:
 
 - **`Account`**: Base class that defines core functionalities.
 - **`ClassicAccount`**: Represents a standard bank account without support for interest rate 
@@ -31,9 +30,9 @@ rate:
 - **`SavingsAccount`**: Supports everything an Account does, plus interest rate calculations.
 - **`AccountFactory`**: Implements the Factory design pattern to create different account types (e.g., ClassicAccount, SavingsAccount).
 
-### 1.2`cards` package
+#### 1.2`cards` package
 
-Contains card-related functionalities for handling bank cards:
+Contains classes for types of cards:
 
 - **`Card`**: Base class representing a classic bank card.
 - **`CardOneTimeUse`**: Represents disposable one-time-use cards that extends the Card class.
@@ -54,14 +53,14 @@ Defines commands that can be made, such as:
 Handles the generation of various reports:
 
 - **`ReportFactory`**: Creates different types of reports based on command input.
-- **`ReportStrategy`**: Interface for implementing various report generation strategies.
+- **`ReportStrategy`**: Interface for implementing various report generation strategies.  
 Implemented by:
   - **`ClassicReport`**: Generates a standard report.
   - **`SpendingReport`**: Generates a spending report.
 
 ### 4.`transactions` package
 
-This package handles transactions, capturing essential information about each type of transaction.
+This package handles transactions and how are they built using builder pattern.
 
 - **`Transaction`**: Represents a transaction, storing details about it.  
 Contains class:
@@ -70,14 +69,14 @@ Contains class:
 
 ### 5.`utils` package
 
-Contains helper utilities:
+Contains helper classes:
 
 - **`Utils`**: Provides general-purpose helper methods.
 - **`JsonOutput`**: Makes JSON output for different commands.
 
 ### 6.`main` package
 
-- **`Main`**: The entry point of the application that initializes the system, processes commands 
+- **`Main`**: The entry point of the project that initializes the bank, processes commands 
   and triggers the flow of the program.
 
 ## Code Flow 
@@ -93,9 +92,9 @@ generated using the `TransactionBuilder` and stored by users and accounts.
 
 #### Key Design Patterns:
 
-- **Command Pattern**: Used to encapsulate and execute various operations (e.g., adding accounts, 
+- **Command Pattern**: Used to encapsulate and execute various commands (e.g., adding accounts, 
   sending money, generating reports, paying online, etc.).
-- **Builder Pattern**: Used to create `Transaction` objects step-by-step, setting various properties 
+- **Builder Pattern**: Used to create `Transaction` objects, setting various properties 
   like transaction amount, involved accounts, currency etc.
 - **Factory Pattern**: The `AccountFactory` creates specific account types (e.g., `ClassicAccount`, `SavingsAccount`) based on user input.
 - **Strategy Pattern**: Used in report generation, providing flexibility to format and generate different reports.
