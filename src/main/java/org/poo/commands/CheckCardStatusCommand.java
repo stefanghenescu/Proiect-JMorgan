@@ -8,7 +8,11 @@ import org.poo.utils.JsonOutput;
 
 import java.util.NoSuchElementException;
 
-public class CheckCardStatusCommand implements Command {
+/**
+ * Class responsible for checking the status of a card.
+ * Implements the Command interface. This class is part of the Command design pattern.
+ */
+public final class CheckCardStatusCommand implements Command {
     private final Bank bank;
     private final CommandInput command;
     private final ArrayNode output;
@@ -20,6 +24,11 @@ public class CheckCardStatusCommand implements Command {
         this.output = output;
     }
 
+    /**
+     * Method responsible for checking the status of a card.
+     * If the card is not found, an error message is added to the output.
+     * If the card is found, the card is checked.
+     */
     @Override
     public void execute() {
         Card card;

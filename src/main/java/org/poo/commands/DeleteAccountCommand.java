@@ -10,7 +10,11 @@ import org.poo.utils.JsonOutput;
 
 import java.util.NoSuchElementException;
 
-public class DeleteAccountCommand implements Command {
+/**
+ * Class responsible for deleting an account from a user.
+ * Implements the Command interface. This class is part of the Command design pattern.
+ */
+public final class DeleteAccountCommand implements Command {
     private final Bank bank;
     private final CommandInput command;
     private final ArrayNode output;
@@ -22,6 +26,10 @@ public class DeleteAccountCommand implements Command {
         this.output = output;
     }
 
+    /**
+     * Method responsible for deleting an account from a user.
+     * If the account is not found, an error message is added to the output.
+     */
     @Override
     public void execute() {
         String accountIBAN = bank.getAliases().get(command.getAccount());
@@ -47,7 +55,7 @@ public class DeleteAccountCommand implements Command {
             // delete the account from the bank database
             bank.getAccounts().remove(account.getIban());
         } else {
-            // update transactions with an error message
+            // transaction with an error message
             Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
                     "Account couldn't be deleted - there are funds remaining")
                     .build();

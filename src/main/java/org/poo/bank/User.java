@@ -30,7 +30,7 @@ public class User {
      * Method that adds an account to the user. This method is used when creating a new account.
      * @param account the account to be added to the user's database
      */
-    public void addAccount(Account account) {
+    public void addAccount(final Account account) {
         accounts.add(account);
     }
 
@@ -38,7 +38,7 @@ public class User {
      * Deletes an account from the user's list of accounts if its balance is zero.
      * All associated cards will also be deleted before the account is removed.
      * @param account the account to be removed from the user's database
-     * @return true if the account was successfully deleted, false if the account's balance is non-zero
+     * @return true if the account was deleted, false if the account's balance is non-zero
      */
     public boolean deleteAccount(final Account account) {
         if (account.getBalance() != 0) {

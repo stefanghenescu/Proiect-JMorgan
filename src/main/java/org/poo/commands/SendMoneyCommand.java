@@ -7,7 +7,11 @@ import org.poo.transactions.Transaction;
 
 import java.util.NoSuchElementException;
 
-public class SendMoneyCommand implements Command {
+/**
+ * Class responsible for sending money from one account to another.
+ * Implements the Command interface. This class is part of the Command design pattern.
+ */
+public final class SendMoneyCommand implements Command {
     private static final double ROUNDING = 10000.0;
     private final Bank bank;
     private final CommandInput command;
@@ -17,6 +21,10 @@ public class SendMoneyCommand implements Command {
         this.command = command;
     }
 
+    /**
+     * Method responsible for sending money from one account to another.
+     * Add transactions to the sender and receiver accounts.
+     */
     @Override
     public void execute() {
         // get the account to send money from
@@ -52,6 +60,7 @@ public class SendMoneyCommand implements Command {
                     "Insufficient funds")
                     .build();
         } else {
+            // add transaction for sender and receiver
             transactionSender = new Transaction.TransactionBuilder(command.getTimestamp(),
                     command.getDescription())
                     .senderIBAN(senderAccount.getIban())
@@ -72,6 +81,7 @@ public class SendMoneyCommand implements Command {
         senderAccount.getOwner().addTransaction(transactionSender);
         senderAccount.addTransaction(transactionSender);
 
+        // if money can be sent (the sender has enough money), add a transaction to the receiver
         if (transactionReceiver != null) {
             receiverAccount.getOwner().addTransaction(transactionReceiver);
             receiverAccount.addTransaction(transactionReceiver);

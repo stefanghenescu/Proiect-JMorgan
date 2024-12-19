@@ -6,7 +6,11 @@ import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.JsonOutput;
 
-public class PrintUsersCommand implements Command {
+/**
+ * Class responsible for printing all users.
+ * Implements the Command interface. This class is part of the Command design pattern.
+ */
+public final class PrintUsersCommand implements Command {
     private final Bank bank;
     private final CommandInput command;
     private final ArrayNode output;
@@ -17,6 +21,10 @@ public class PrintUsersCommand implements Command {
         this.output = output;
     }
 
+    /**
+     * Method responsible for printing all users.
+     * The users are printed using the JsonOutput class.
+     */
     @Override
     public void execute() {
         ObjectNode usersArray = JsonOutput.writeUsers(command, bank);

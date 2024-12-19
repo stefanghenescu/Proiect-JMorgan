@@ -10,7 +10,11 @@ import org.poo.transactions.Transaction;
 
 import java.util.NoSuchElementException;
 
-public class CreateCardCommand implements Command {
+/**
+ * Class that represents the command to create a card.
+ * This class implements the Command interface as part of the Command design pattern.
+ */
+public final class CreateCardCommand implements Command {
     private final Bank bank;
     private final CommandInput command;
 
@@ -19,6 +23,10 @@ public class CreateCardCommand implements Command {
         this.command = command;
     }
 
+    /**
+     * This method executes the process of creating a card.
+     * If the account cannot be found, the command will terminate without changes.
+     */
     public void execute() {
         // get the account to add the card to
         Account account;
@@ -35,10 +43,6 @@ public class CreateCardCommand implements Command {
             return;
         }
 
-        if (!user.getAccounts().contains(account)) {
-            return;
-        }
-
         Card card;
         if (command.getCommand().equals("createOneTimeCard")) {
             card = new CardOneTimeUse(account, bank);
@@ -52,7 +56,7 @@ public class CreateCardCommand implements Command {
         // add the card to the bank database
         bank.getCards().put(card.getNumber(), card);
 
-        // transaction for later update()
+        // transaction for new card creation
         Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
                 "New card created")
                 .card(card.getNumber())

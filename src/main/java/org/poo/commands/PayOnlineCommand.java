@@ -10,7 +10,11 @@ import org.poo.utils.JsonOutput;
 
 import java.util.NoSuchElementException;
 
-public class PayOnlineCommand implements Command {
+/**
+ * Class responsible for paying online with a card.
+ * Implements the Command interface. This class is part of the Command design pattern.
+ */
+public final class PayOnlineCommand implements Command {
     private final Bank bank;
     private final CommandInput command;
     private final ArrayNode output;
@@ -21,6 +25,10 @@ public class PayOnlineCommand implements Command {
         this.output = output;
     }
 
+    /**
+     * Method responsible for paying online with a card.
+     * If the card is not found, an error message is added to the output.
+     */
     @Override
     public void execute() {
         Card card;
@@ -31,12 +39,7 @@ public class PayOnlineCommand implements Command {
             return;
         }
 
-        User cardOwnerUser = bank.getUser(command.getEmail());
         Account cardAccount = card.getOwner();
-        if (cardOwnerUser == null || !cardOwnerUser.getAccounts().contains(cardAccount)) {
-            output.add(JsonOutput.cardNotFound(command));
-            return;
-        }
 
         // convert in account currency
         double exchangeRate = bank.getExchangeRates().getRate(command.getCurrency(),

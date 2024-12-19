@@ -7,7 +7,11 @@ import org.poo.fileio.CommandInput;
 import org.poo.reports.ReportFactory;
 import org.poo.reports.ReportStrategy;
 
-public class MakeReportCommand implements Command {
+/**
+ * Class responsible for generating a report.
+ * Implements the Command interface. This class is part of the Command design pattern.
+ */
+public final class MakeReportCommand implements Command {
     private final Bank bank;
     private final CommandInput command;
     private final ArrayNode output;
@@ -18,8 +22,13 @@ public class MakeReportCommand implements Command {
         this.output = output;
     }
 
+    /**
+     * Method responsible for generating a report.
+     * The report is generated using the ReportFactory class.
+     */
     @Override
     public void execute() {
+        // Get the report type from the command
         ReportStrategy reportStrategy = ReportFactory.getReportType(command.getCommand());
 
         ObjectNode report = reportStrategy.generateReport(bank, command);

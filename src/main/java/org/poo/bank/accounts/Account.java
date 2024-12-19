@@ -1,5 +1,6 @@
 package org.poo.bank.accounts;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.Getter;
 import lombok.Setter;
 import org.poo.bank.cards.Card;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
  * Class that represents a bank account. Each account a list of cards and transactions.
  * This class is then extended by the different types of accounts (classic, savings)
  */
-public class Account {
+public abstract class Account {
     public static final double DEFAULT_BALANCE = 0.0;
     private String iban;
     private double balance;
@@ -93,5 +94,22 @@ public class Account {
     public void addTransaction(final Transaction transaction) {
         transactions.add(transaction);
     }
+
+    /**
+     * This method will add interest rate for a savings account and for a classic account will
+     * print an error.
+     * @param command input that contains information about the interest rate
+     * @param output where the message will be printed
+     */
+    public abstract void addInterestRate(CommandInput command, ArrayNode output);
+
+
+    /**
+     * This method will change the interest rate for a savings account and for a classic account
+     * will print an error.
+     * @param command input that contains information about the interest rate
+     * @param output where the message will be printed
+     */
+    public abstract void changeInterestRate(CommandInput command, ArrayNode output);
 }
 

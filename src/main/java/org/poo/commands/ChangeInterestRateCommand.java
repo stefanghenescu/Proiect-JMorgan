@@ -2,13 +2,16 @@ package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.bank.accounts.Account;
-import org.poo.bank.accounts.SavingsAccount;
 import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
-import org.poo.transactions.Transaction;
-import org.poo.utils.JsonOutput;
 
-public class ChangeInterestRateCommand implements Command {
+import java.util.NoSuchElementException;
+
+/**
+ * Class responsible for changing the interest rate of a savings account.
+ * Implements the Command interface. This class is part of the Command design pattern.
+ */
+public final class ChangeInterestRateCommand implements Command {
     private final Bank bank;
     private final CommandInput command;
     private final ArrayNode output;
@@ -20,21 +23,20 @@ public class ChangeInterestRateCommand implements Command {
         this.output = output;
     }
 
+    /**
+     * Method responsible for changing the interest rate of a savings account.
+     * If the account is not a savings account, an error message is added to the output.
+     * If the interest rate was changed, a transaction is created.
+     */
     @Override
     public void execute() {
-        Account account = bank.getAccounts().get(command.getAccount());
-        if (!account.getAccountType().equals("savings")) {
-            output.add(JsonOutput.writeErrorSavingAccount(command));
+        Account account;
+        try {
+            account = bank.getAccount(command.getAccount());
+        } catch (NoSuchElementException e) {
             return;
         }
 
-        ((SavingsAccount) account).setInterestRate(command.getInterestRate());
-
-        Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
-                "Interest rate of the account changed to " + command.getInterestRate())
-                .build();
-
-        account.getOwner().addTransaction(transaction);
-        account.addTransaction(transaction);
+        account.changeInterestRate(command, output);
     }
 }

@@ -9,7 +9,12 @@ import org.poo.transactions.Transaction;
 
 import java.util.NoSuchElementException;
 
-public class AddAccountCommand implements Command {
+/**
+ * Class for adding a new account to a user and the bank's database.
+ * This command creates an account based on input. This method is part of the Command design
+ * pattern.
+ */
+public final class AddAccountCommand implements Command {
     private final Bank bank;
     private final CommandInput command;
 
@@ -18,6 +23,10 @@ public class AddAccountCommand implements Command {
         this.command = command;
     }
 
+    /**
+     * This method executes the process of adding a new account.
+     * If the specified user cannot be found, the command will terminate without changes.
+     */
     @Override
     public void execute() {
         // create account
@@ -44,10 +53,12 @@ public class AddAccountCommand implements Command {
         // add the account to the aliases database
         bank.getAliases().put(account.getIban(), account.getIban());
 
-        // transaction for later update()
+        // transaction for new account creation
         Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
                 "New account created")
                 .build();
+
+        // add the transaction to the user and account
         userToAddAccount.addTransaction(transaction);
         account.addTransaction(transaction);
     }
