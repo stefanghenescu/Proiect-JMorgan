@@ -7,8 +7,7 @@ This project implements a simplified online banking system using OOP principles 
 focuses on key banking elements such as users, accounts, cards, transactions and 
 reports. Moreover, it supports various operations like adding accounts, transferring money, online 
 payments, generating reports and more. The design highlights modularity and scalability, 
-following design patterns like Factory, Builder,
-Strategy, Command.
+following design patterns like Factory, Builder, Strategy, Command.
 
 ## Package Structure
 
@@ -95,7 +94,7 @@ generated using the `TransactionBuilder` and stored by users and accounts.
 
 #### Key Design Patterns:
 
-- **Command Pattern**: Used to encapsulate and execute various commands (e.g., adding accounts, 
+- **Command Pattern**: Used to encapsulate and execute various commands (e.g. adding accounts, 
   sending money, generating reports, paying online, etc.).
 - **Builder Pattern**: Used to create `Transaction` objects, setting various properties 
   like transaction amount, involved accounts, currency etc.
@@ -111,5 +110,5 @@ the future. As and example, managing various transaction types and how they are 
 expanded as I use a builder pattern and new attributes can be added. Moreover, I can add more 
 types of accounts as I use a factory pattern to create them.
 
-Overall, the project was a great opportunity to apply OOP principles to create a scalable, 
-maintainable banking system.
+Overall, the project was a great opportunity to apply OOP principles to create a scalable 
+banking system.
