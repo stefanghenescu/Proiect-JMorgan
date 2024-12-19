@@ -6,13 +6,12 @@ import lombok.Setter;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
 
-@Getter
-@Setter
-
 /**
  * Class that represents a savings account and extends the Account class.
  * This type of account has also an interest rate.
  */
+@Getter
+@Setter
 public final class SavingsAccount extends Account {
     private double interestRate;
 

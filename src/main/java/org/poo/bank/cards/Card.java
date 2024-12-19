@@ -7,12 +7,11 @@ import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
 import org.poo.utils.Utils;
 
-@Setter
-@Getter
-
 /**
  * Class that represents a card.
  */
+@Setter
+@Getter
 public class Card {
     private static final int DIF_BALANCE = 30;
     private String status;

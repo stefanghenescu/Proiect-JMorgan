@@ -3,12 +3,11 @@ package org.poo.bank;
 import lombok.Getter;
 import lombok.Setter;
 
-
-@Getter
-@Setter
 /**
  * Class that represents a commerciant.
  */
+@Getter
+@Setter
 public class Commerciant {
     private String name;
     private double moneyReceived;

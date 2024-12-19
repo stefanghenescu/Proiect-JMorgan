@@ -9,10 +9,10 @@ import org.poo.transactions.Transaction;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
 /**
  * Class that represents a user. Each user has a list of accounts and transactions.
  */
+@Getter
 public class User {
     private final String firstName;
     private final String lastName;

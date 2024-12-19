@@ -3,7 +3,7 @@
 
 ## Overview
 
-This project implements a simplified e-banking system using OOP principles in Java. The system 
+This project implements a simplified online banking system using OOP principles in Java. The system 
 focuses on key banking features such as managing users, accounts, cards, transactions and reports.
 The design emphasizes modularity and scalability, following design patterns like Factory, Builder,
 Strategy, Command.
@@ -12,7 +12,7 @@ Strategy, Command.
 
 ### 1.`bank` package
 
-Contains essential components for managing users, transactions and the overall banking system:
+Contains essential components of the banking system:
 
 - **`Bank`**: Central class that manages users, accounts, cards etc.
 - **`User`**: Represents the users of the banking system and implements user-related operations 
@@ -53,19 +53,20 @@ Defines commands that can be made, such as:
 
 Handles the generation of various reports:
 
-- **`ClassicReport`**: Generates a standard report.
-- **`SpendingReport`**: Generates a spending report.
-- **`ReportStrategy`**: Interface for implementing various report generation strategies.
 - **`ReportFactory`**: Creates different types of reports based on command input.
+- **`ReportStrategy`**: Interface for implementing various report generation strategies.
+Implemented by:
+  - **`ClassicReport`**: Generates a standard report.
+  - **`SpendingReport`**: Generates a spending report.
 
 ### 4.`transactions` package
 
 This package handles transactions, capturing essential information about each type of transaction.
 
-- **`Transaction`**: Represents a transaction, storing details about it.
-
-- **`TransactionBuilder`**: Implements the Builder pattern to create `Transaction` objects step-by-step,
-  setting various properties like transaction amount, involved accounts, currency etc.
+- **`Transaction`**: Represents a transaction, storing details about it.  
+Contains class:
+  - **`TransactionBuilder`**: Implements the Builder pattern to create `Transaction` objects,
+    setting various properties like transaction amount, involved accounts, currency etc.
 
 ### 5.`utils` package
 
@@ -101,7 +102,7 @@ generated using the `TransactionBuilder` and stored by users and accounts.
 
 ## Feedback
 
-Developing this project provided a solid hands-on experience with OOP concepts and design patterns.
+Developing this project provided experience with OOP concepts and design patterns.
 The modular architecture facilitated clean code management and the ability to extend the code in 
 the future. As and example, managing various transaction types and how they are made can be 
 expanded as I use a builder pattern and new attributes can be added. Moreover, I can add more 

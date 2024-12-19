@@ -11,13 +11,12 @@ import org.poo.utils.Utils;
 
 import java.util.ArrayList;
 
-@Setter
-@Getter
-
 /**
  * Class that represents a bank account. Each account a list of cards and transactions.
  * This class is then extended by the different types of accounts (classic, savings)
  */
+@Setter
+@Getter
 public abstract class Account {
     public static final double DEFAULT_BALANCE = 0.0;
     private String iban;

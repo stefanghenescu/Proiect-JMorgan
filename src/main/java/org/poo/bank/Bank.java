@@ -13,12 +13,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-@Setter
-@Getter
 /**
  * Class representing a bank and its database of different elements (users, accounts, cards etc.).
  */
-public class Bank {
+@Setter
+@Getter
+public final class Bank {
     private Map<String, User> users = new LinkedHashMap<>();
     private Map<String, Account> accounts = new HashMap<>();
     private Map<String, Card> cards = new HashMap<>();

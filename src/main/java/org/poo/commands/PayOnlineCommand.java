@@ -42,7 +42,7 @@ public final class PayOnlineCommand implements Command {
 
         // convert in account currency
         double exchangeRate = bank.getExchangeRates().getRate(command.getCurrency(),
-                cardAccount.getCurrency());
+                                                                cardAccount.getCurrency());
         double amount = command.getAmount() * exchangeRate;
 
         card.payOnline(amount, command);
