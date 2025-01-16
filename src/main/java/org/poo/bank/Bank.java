@@ -24,6 +24,7 @@ public final class Bank {
     private Map<String, Card> cards = new HashMap<>();
     private ExchangeRates exchangeRates = new ExchangeRates();
     private Map<String, String> aliases = new HashMap<>();
+    private Map<String, Commerciant> commerciants = new HashMap<>();
     private ArrayNode output;
 
     public Bank(final ObjectInput input, final ArrayNode output) {
@@ -36,6 +37,12 @@ public final class Bank {
             exchangeRates.addRate(exchangeInput.getFrom(), exchangeInput.getTo(),
                                     exchangeInput.getRate());
         }
+
+        for (CommerciantInput commerciantInput : input.getCommerciants()) {
+            Commerciant commerciant = new Commerciant(commerciantInput);
+            commerciants.put(commerciant.getCommerciant(), commerciant);
+        }
+
         this.output = output;
     }
 

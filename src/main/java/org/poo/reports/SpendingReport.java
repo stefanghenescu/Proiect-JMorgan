@@ -47,14 +47,14 @@ public class SpendingReport implements ReportStrategy {
 
         // Add transactions to the list and filter them by timestamp
         for (Transaction transaction : account.getTransactions()) {
-            addTransaction(transaction, transactions, commerciants, command);
+            addTransaction(transaction, transactions, commerciants, command, bank);
         }
         return JsonOutput.writeSpendingReport(command, account, transactions, commerciants);
     }
 
     private void addTransaction(final Transaction transaction, final List<Transaction> transactions,
                                 final Map<String, Commerciant> commerciants,
-                                final CommandInput command) {
+                                final CommandInput command, final Bank bank) {
         if (transaction.getTimestamp() >= command.getStartTimestamp()
                 && transaction.getTimestamp() <= command.getEndTimestamp()
                 && transaction.getCommerciant() != null) {
@@ -62,19 +62,19 @@ public class SpendingReport implements ReportStrategy {
             transactions.add(transaction);
 
             // add the commerciant to the map of commerciants
-            addCommerciant(commerciants, transaction);
+            addCommerciant(commerciants, transaction, bank);
         }
     }
 
     private void addCommerciant(final Map<String, Commerciant> commerciants,
-                                final Transaction transaction) {
+                                final Transaction transaction, final Bank bank) {
         // check if the commerciant is already in the map of commerciants
         // update the amount of money received by the commerciant
         if (commerciants.containsKey(transaction.getCommerciant())) {
             Commerciant commerciant = commerciants.get(transaction.getCommerciant());
             commerciant.receiveMoney(transaction.getAmount());
         } else {
-            Commerciant commerciant = new Commerciant(transaction.getCommerciant());
+            Commerciant commerciant = bank.getCommerciants().get(transaction.getCommerciant());
             commerciant.receiveMoney(transaction.getAmount());
             commerciants.put(transaction.getCommerciant(), commerciant);
         }

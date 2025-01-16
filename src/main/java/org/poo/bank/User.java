@@ -17,6 +17,8 @@ public class User {
     private final String firstName;
     private final String lastName;
     private final String email;
+    private final String birthDate;
+    private final String occupation;
     private final ArrayList<Account> accounts = new ArrayList<>();
     private final List<Transaction> transactions = new ArrayList<>();
 
@@ -24,6 +26,8 @@ public class User {
         firstName = userInput.getFirstName();
         lastName = userInput.getLastName();
         email = userInput.getEmail();
+        birthDate = userInput.getBirthDate();
+        occupation = userInput.getOccupation();
     }
 
     /**

@@ -293,7 +293,7 @@ public final class JsonOutput {
         for (Commerciant commerciant : commerciants.values()) {
             ObjectNode commerciantJson = MAPPER.createObjectNode();
 
-            commerciantJson.put("commerciant", commerciant.getName());
+            commerciantJson.put("commerciant", commerciant.getCommerciant());
             commerciantJson.put("total", commerciant.getMoneyReceived());
 
             commerciansArray.add(commerciantJson);

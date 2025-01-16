@@ -26,6 +26,7 @@ public final class AccountFactory {
         return switch (accountType) {
             case "savings" -> new SavingsAccount(command);
             case "classic" -> new ClassicAccount(command);
+            case "business" -> new BusinessAccount(command);
             default -> throw new IllegalArgumentException("Invalid account type: " + accountType);
         };
     }
