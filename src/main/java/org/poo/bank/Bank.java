@@ -123,6 +123,8 @@ public final class Bank {
             case "addInterest" -> new AddInterestCommand(this, input, output);
             case "changeInterestRate" -> new ChangeInterestRateCommand(this, input, output);
             case "report", "spendingsReport" -> new MakeReportCommand(this, input, output);
+            case "withdrawSavings" -> new WithdrawSavingsCommand(this, input, output);
+            case "upgradePlan" -> new UpgradePlanCommand(this, input, output);
             default -> null;
         };
     }

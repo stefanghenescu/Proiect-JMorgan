@@ -3,10 +3,14 @@ package org.poo.bank;
 import lombok.Getter;
 import org.poo.bank.accounts.Account;
 import org.poo.bank.cards.Card;
+import org.poo.bank.commission.*;
 import org.poo.fileio.UserInput;
 import org.poo.transactions.Transaction;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -19,6 +23,8 @@ public class User {
     private final String email;
     private final String birthDate;
     private final String occupation;
+    private String plan;
+    private CommissionStrategy commissionStrategy;
     private final ArrayList<Account> accounts = new ArrayList<>();
     private final List<Transaction> transactions = new ArrayList<>();
 
@@ -28,6 +34,12 @@ public class User {
         email = userInput.getEmail();
         birthDate = userInput.getBirthDate();
         occupation = userInput.getOccupation();
+        if (occupation.equals("student")) {
+            plan = "student";
+        } else {
+            plan = "standard";
+        }
+        setCommissionStrategy(plan);
     }
 
     /**
@@ -49,9 +61,12 @@ public class User {
             return false;
         }
 
-        for (Card card : account.getCards()) {
-            account.deleteCard(card);
+        Iterator<Card> iterator = account.getCards().iterator();
+        while (iterator.hasNext()) {
+            iterator.next();
+            iterator.remove();
         }
+
         accounts.remove(account);
         return true;
     }
@@ -62,5 +77,77 @@ public class User {
      */
     public void addTransaction(final Transaction transaction) {
         transactions.add(transaction);
+    }
+
+    public String upgradePlan(final String newPlan, Account account, Bank bank) {
+        if (plan.equals(newPlan)) {
+            return "The user already has the " + newPlan + " plan";
+        }
+
+        if (downgradePlan(newPlan)) {
+            return "You cannot downgrade your plan.";
+        }
+
+        double fee = planUpgradeFee(newPlan);
+        double exchangeRate = bank.getExchangeRates().getRate("RON", account.getCurrency());
+
+        if (account.getBalance() < fee * exchangeRate) {
+            return "Insufficient funds";
+        }
+        account.withdraw(fee * exchangeRate);
+
+        plan = newPlan;
+        setCommissionStrategy(newPlan);
+        return "Upgrade plan";
+    }
+
+    private boolean downgradePlan(final String newPlan) {
+        if (plan.equals("gold") && (newPlan.equals("silver") || newPlan.equals("standard") ||
+                newPlan.equals("student"))) {
+            return true;
+        }
+        if (plan.equals("silver") && (newPlan.equals("standard") || newPlan.equals("student"))) {
+            return true;
+        }
+        return false;
+    }
+
+    private double planUpgradeFee(final String newPlan) {
+        if (newPlan.equals("silver") && (plan.equals("standard") || plan.equals("student"))) {
+            return 100;
+        }
+        if (newPlan.equals("gold") && plan.equals("silver")) {
+            return 250;
+        }
+        if (newPlan.equals("gold") && (plan.equals("standard") || plan.equals("student"))) {
+            return 350;
+        }
+        return 0;
+    }
+
+    public void setCommissionStrategy(final String plan) {
+        switch (plan) {
+            case "student":
+                commissionStrategy = new StudentCommission();
+                break;
+            case "standard":
+                commissionStrategy = new StandardCommission();
+                break;
+            case "silver":
+                commissionStrategy = new SilverCommission();
+                break;
+            case "gold":
+                commissionStrategy = new GoldCommission();
+                break;
+        }
+    }
+
+    public boolean has21Years() {
+        LocalDate birth = LocalDate.parse(birthDate);
+        LocalDate now = LocalDate.now();
+
+        Period age = Period.between(birth, now);
+
+        return age.getYears() >= 21;
     }
 }
