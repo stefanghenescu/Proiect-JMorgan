@@ -69,6 +69,7 @@ public abstract class Account {
         if (!checkEnoughMoney(amount)) {
             return 0;
         }
+
         balance -= amount;
         return amount;
     }
@@ -80,7 +81,7 @@ public abstract class Account {
      * @return true if the account has enough money, false otherwise
      */
     public boolean checkEnoughMoney(final double amount) {
-        if (balance - amount <= minBalance) {
+        if (balance - amount < minBalance) {
             return false;
         }
         return true;

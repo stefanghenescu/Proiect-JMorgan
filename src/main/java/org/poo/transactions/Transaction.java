@@ -17,12 +17,14 @@ public final class Transaction {
     private final String card;
     private final String cardHolder;
     private final String account;
+    private final String accountIBAN;
     private final String senderIBAN;
     private final String receiverIBAN;
     private final String transferType;
     private final String commerciant;
     private final String currency;
     private final List<String> involvedAccounts;
+    private final String newPlanType;
     private final String error;
 
     /**
@@ -41,6 +43,7 @@ public final class Transaction {
         card = builder.card;
         cardHolder = builder.cardHolder;
         account = builder.account;
+        accountIBAN = builder.accountIBAN;
         senderIBAN = builder.senderIBAN;
         receiverIBAN = builder.receiverIBAN;
         amount = builder.amount;
@@ -49,6 +52,7 @@ public final class Transaction {
         commerciant = builder.commerciant;
         currency = builder.currency;
         involvedAccounts = builder.involvedAccounts;
+        newPlanType = builder.newPlanType;
         error = builder.error;
     }
 
@@ -74,6 +78,7 @@ public final class Transaction {
         private String card;
         private String cardHolder;
         private String account;
+        private String accountIBAN;
         private String senderIBAN;
         private String receiverIBAN;
         private Double amount;
@@ -82,6 +87,7 @@ public final class Transaction {
         private String commerciant;
         private String currency;
         private List<String> involvedAccounts;
+        private String newPlanType;
         private String error;
 
         public TransactionBuilder(final long timestamp, final String description) {
@@ -116,6 +122,16 @@ public final class Transaction {
          */
         public TransactionBuilder account(final String accountIBAN) {
             account = accountIBAN;
+            return this;
+        }
+
+        /**
+         * Method that sets the account IBAN of the transaction
+         * @param account the account IBAN for the transaction
+         * @return the current builder instance
+         */
+        public TransactionBuilder accountIBAN(final String account) {
+            accountIBAN = account;
             return this;
         }
 
@@ -198,6 +214,16 @@ public final class Transaction {
          */
         public TransactionBuilder involvedAccounts(final List<String> accountsInvolved) {
             involvedAccounts = accountsInvolved;
+            return this;
+        }
+
+        /**
+         * Method that sets the new plan type of the transaction
+         * @param planType the new plan type for the transaction
+         * @return the current builder instance
+         */
+        public TransactionBuilder newPlanType(final String planType) {
+            newPlanType = planType;
             return this;
         }
 

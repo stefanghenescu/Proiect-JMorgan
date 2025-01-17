@@ -221,7 +221,7 @@ public final class JsonOutput {
         errorSavingAccount.put("command", command.getCommand());
 
         output.put("timestamp", command.getTimestamp());
-        output.put("description", "This is not a savings account");
+        output.put("description", "Account is not of type savings.");
 
         errorSavingAccount.set("output", output);
         errorSavingAccount.put("timestamp", command.getTimestamp());
