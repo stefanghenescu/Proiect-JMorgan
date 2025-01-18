@@ -1,6 +1,5 @@
 package org.poo.transactions;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,51 +11,65 @@ import java.util.List;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Transaction {
+public final class Transaction {
     private final long timestamp;
     private final String description;
     private final String card;
     private final String cardHolder;
     private final String account;
+    private final String accountIBAN;
     private final String senderIBAN;
     private final String receiverIBAN;
     private final String transferType;
     private final String commerciant;
     private final String currency;
     private final List<String> involvedAccounts;
+    private final String newPlanType;
     private final String error;
 
+    /**
+     * JsonIgnore is used to exclude the field from the JSON output
+     * Amount and amountString are used to store the amount of the transaction
+     * This will be taken care in a method that returns the amount as an Object
+     */
     @JsonIgnore
     private final Double amount;
     @JsonIgnore
     private final String amountString;
 
-    private Transaction(TransactionBuilder builder) {
-        this.timestamp = builder.timestamp;
-        this.description = builder.description;
-        this.card = builder.card;
-        this.cardHolder = builder.cardHolder;
-        this.account = builder.account;
-        this.senderIBAN = builder.senderIBAN;
-        this.receiverIBAN = builder.receiverIBAN;
-        this.amount = builder.amount;
-        this.amountString = builder.amountString;
-        this.transferType = builder.transferType;
-        this.commerciant = builder.commerciant;
-        this.currency = builder.currency;
-        this.involvedAccounts = builder.involvedAccounts;
-        this.error = builder.error;
+    private Transaction(final TransactionBuilder builder) {
+        timestamp = builder.timestamp;
+        description = builder.description;
+        card = builder.card;
+        cardHolder = builder.cardHolder;
+        account = builder.account;
+        accountIBAN = builder.accountIBAN;
+        senderIBAN = builder.senderIBAN;
+        receiverIBAN = builder.receiverIBAN;
+        amount = builder.amount;
+        amountString = builder.amountString;
+        transferType = builder.transferType;
+        commerciant = builder.commerciant;
+        currency = builder.currency;
+        involvedAccounts = builder.involvedAccounts;
+        newPlanType = builder.newPlanType;
+        error = builder.error;
     }
 
+    /**
+     * Method that returns the amount of the transaction.
+     * If the amount is a string, it returns the string.
+     * If the amount is a Double, it returns the Double. I used Double instead of primitive double
+     * because of the comparison with null.
+     * JsonProperty is used to change the name of the field in the JSON output.
+     * @return the amount of the transaction as an Object
+     */
     @JsonProperty("amount")
     public Object getDynamicAmount() {
         if (amountString != null) {
             return amountString;
         }
-        if (amount != null) {
-            return amount;
-        }
-        return null;
+        return amount;
     }
 
     public static class TransactionBuilder {
@@ -65,6 +78,7 @@ public class Transaction {
         private String card;
         private String cardHolder;
         private String account;
+        private String accountIBAN;
         private String senderIBAN;
         private String receiverIBAN;
         private Double amount;
@@ -73,73 +87,160 @@ public class Transaction {
         private String commerciant;
         private String currency;
         private List<String> involvedAccounts;
+        private String newPlanType;
         private String error;
 
-        public TransactionBuilder(long timestamp, String description) {
+        public TransactionBuilder(final long timestamp, final String description) {
             this.timestamp = timestamp;
             this.description = description;
         }
 
-        public TransactionBuilder card(String card) {
-            this.card = card;
+        /**
+         * Method that sets the card number of the transaction
+         * @param cardNumber the card number for the transaction
+         * @return the current builder instance
+         */
+        public TransactionBuilder card(final String cardNumber) {
+            card = cardNumber;
             return this;
         }
 
-        public TransactionBuilder cardHolder(String cardHolder) {
-            this.cardHolder = cardHolder;
+        /**
+         * Method that sets the cardholder of the transaction
+         * @param holder the cardholder for the transaction
+         * @return the current builder instance
+         */
+        public TransactionBuilder cardHolder(final String holder) {
+            cardHolder = holder;
             return this;
         }
 
-        public TransactionBuilder account(String account) {
-            this.account = account;
+        /**
+         * Method that sets the account IBAN of the transaction
+         * @param accountIBAN the account IBAN for the transaction
+         * @return the current builder instance
+         */
+        public TransactionBuilder account(final String accountIBAN) {
+            account = accountIBAN;
             return this;
         }
 
-        public TransactionBuilder senderIBAN(String senderIBAN) {
-            this.senderIBAN = senderIBAN;
+        /**
+         * Method that sets the account IBAN of the transaction
+         * @param account the account IBAN for the transaction
+         * @return the current builder instance
+         */
+        public TransactionBuilder accountIBAN(final String account) {
+            accountIBAN = account;
             return this;
         }
 
-        public TransactionBuilder receiverIBAN(String receiverIBAN) {
-            this.receiverIBAN = receiverIBAN;
+        /**
+         * Method that sets the sender IBAN of the transaction
+         * @param senderAccountIBAN the sender account IBAN for the transaction
+         * @return the current builder instance
+         */
+        public TransactionBuilder senderIBAN(final String senderAccountIBAN) {
+            senderIBAN = senderAccountIBAN;
             return this;
         }
 
-        public TransactionBuilder amount(Double amount) {
-            this.amount = amount;
+        /**
+         * Method that sets the receiver IBAN of the transaction
+         * @param receiverAccountIBAN the receiver account IBAN for the transaction
+         * @return the current builder instance
+         */
+        public TransactionBuilder receiverIBAN(final String receiverAccountIBAN) {
+            receiverIBAN = receiverAccountIBAN;
             return this;
         }
 
-        public TransactionBuilder amountString(String amountString) {
-            this.amountString = amountString;
+        /**
+         * Method that sets the amount of the transaction as a Double
+         * @param transactionAmount the amount of the transaction as a Double
+         * @return the current builder instance
+         */
+        public TransactionBuilder amount(final Double transactionAmount) {
+            amount = transactionAmount;
             return this;
         }
 
-        public TransactionBuilder transferType(String transferType) {
-            this.transferType = transferType;
+        /**
+         * Method that sets the amount of the transaction as a String
+         * This is used when the currency has to be displayed in the transaction in the amount
+         * field
+         * @param transactionAmount the amount of the transaction as a String
+         * @return the current builder instance
+         */
+        public TransactionBuilder amountString(final String transactionAmount) {
+            amountString = transactionAmount;
             return this;
         }
 
-        public TransactionBuilder commerciant(String commerciant) {
-            this.commerciant = commerciant;
+        /**
+         * Method that sets the transfer type of the transaction
+         * @param transfer the transfer type of the transaction
+         * @return the current builder instance
+         */
+        public TransactionBuilder transferType(final String transfer) {
+            transferType = transfer;
             return this;
         }
 
-        public TransactionBuilder currency(String currency) {
-            this.currency = currency;
+        /**
+         * Method that sets the commerciant of the transaction
+         * @param commerciantName the commerciant name for the transaction
+         * @return the current builder instance
+         */
+        public TransactionBuilder commerciant(final String commerciantName) {
+            commerciant = commerciantName;
             return this;
         }
 
-        public TransactionBuilder involvedAccounts(List<String> involvedAccounts) {
-            this.involvedAccounts = involvedAccounts;
+        /**
+         * Method that sets the currency of the transaction
+         * @param currencyName the currency name for the transaction
+         * @return the current builder instance
+         */
+        public TransactionBuilder currency(final String currencyName) {
+            currency = currencyName;
             return this;
         }
 
-        public TransactionBuilder error(String error) {
-            this.error = error;
+        /**
+         * Method that sets the accounts involved in the transaction
+         * @param accountsInvolved the accounts involved in the transaction
+         * @return the current builder instance
+         */
+        public TransactionBuilder involvedAccounts(final List<String> accountsInvolved) {
+            involvedAccounts = accountsInvolved;
             return this;
         }
 
+        /**
+         * Method that sets the new plan type of the transaction
+         * @param planType the new plan type for the transaction
+         * @return the current builder instance
+         */
+        public TransactionBuilder newPlanType(final String planType) {
+            newPlanType = planType;
+            return this;
+        }
+
+        /**
+         * Method that sets the error message of the transaction
+         * @param errorMessage the error message for the transaction
+         * @return the current builder instance
+         */
+        public TransactionBuilder error(final String errorMessage) {
+            error = errorMessage;
+            return this;
+        }
+
+        /**
+         * Method that builds the final transaction object
+         * @return a new transaction object
+         */
         public Transaction build() {
             return new Transaction(this);
         }

@@ -180,12 +180,13 @@ public final class Checker {
             BigDecimal roundedValue = BigDecimal.valueOf(node.asDouble())
                     .setScale(precision, RoundingMode.HALF_UP);
             return mapper.getNodeFactory().numberNode(roundedValue);
-        } else if (node.isTextual() && Pattern.matches("[0-9]+(\\.[0-9]+)? [A-Z]{3}", node.asText())) {
+        } else if (node.isTextual() && Pattern.matches(
+                CheckerConstants.DECIMALS_REGEX, node.asText())) {
             String[] words = node.asText().split(" ");
 
             BigDecimal roundedValue = BigDecimal.valueOf(Double.parseDouble(words[0]))
                     .setScale(precision, RoundingMode.HALF_UP);
-            String actualValue = roundedValue.toString() + " " + words[1];
+            String actualValue = roundedValue + " " + words[1];
 
             return mapper.getNodeFactory().textNode(actualValue);
         }

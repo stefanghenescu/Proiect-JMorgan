@@ -3,10 +3,10 @@ package org.poo.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.poo.account.Account;
-import org.poo.bank.Card;
+import org.poo.bank.accounts.Account;
+import org.poo.bank.cards.Card;
 import org.poo.bank.Commerciant;
-import org.poo.bank.SetupBank;
+import org.poo.bank.Bank;
 import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
@@ -14,10 +14,23 @@ import org.poo.transactions.Transaction;
 import java.util.List;
 import java.util.Map;
 
-public class JsonOutput {
+/**
+ * Class responsible for writing the output in JSON format.
+ */
+public final class JsonOutput {
     public static final ObjectMapper MAPPER = new ObjectMapper();
 
-    public static ObjectNode writeUsers(CommandInput command, SetupBank bank) {
+    private JsonOutput() {
+        throw new UnsupportedOperationException("Utility class should not be instantiated");
+    }
+
+    /**
+     * Method responsible for writing the users in JSON format.
+     * @param command the command input that contains information about the command
+     * @param bank the bank that contains the user data
+     * @return the users as a JSON object
+     */
+    public static ObjectNode writeUsers(final CommandInput command, final Bank bank) {
         ObjectNode usersArray = MAPPER.createObjectNode();
 
         usersArray.put("command", command.getCommand());
@@ -33,7 +46,12 @@ public class JsonOutput {
         return usersArray;
     }
 
-    private static ObjectNode writeOneUser(User user) {
+    /**
+     * Helper method responsible for writing one user in JSON format.
+     * @param user the user to be written
+     * @return the user as a JSON object
+     */
+    private static ObjectNode writeOneUser(final User user) {
         ObjectNode userNode = MAPPER.createObjectNode();
 
         userNode.put("firstName", user.getFirstName());
@@ -51,7 +69,12 @@ public class JsonOutput {
         return userNode;
     }
 
-    private static ObjectNode writeAccount(Account account) {
+    /**
+     * Helper method responsible for writing an account in JSON format.
+     * @param account the account to be written
+     * @return the account as a JSON object
+     */
+    private static ObjectNode writeAccount(final Account account) {
         ObjectNode accountNode = MAPPER.createObjectNode();
 
         accountNode.put("IBAN", account.getIban());
@@ -69,7 +92,26 @@ public class JsonOutput {
         return accountNode;
     }
 
-    public static ObjectNode accountNotFound(CommandInput command) {
+    /**
+     * Helper method responsible for writing a card in JSON format.
+     * @param card the card to be written
+     * @return the card as a JSON object
+     */
+    private static ObjectNode writeCard(final Card card) {
+        ObjectNode cardNode = MAPPER.createObjectNode();
+
+        cardNode.put("cardNumber", card.getNumber());
+        cardNode.put("status", card.getStatus());
+
+        return cardNode;
+    }
+
+    /**
+     * Method responsible for writing an error message when an account is not found.
+     * @param command  the command input that contains information about the command
+     * @return the error message as a JSON object
+     */
+    public static ObjectNode accountNotFound(final CommandInput command) {
         ObjectNode errorAccount = MAPPER.createObjectNode();
         ObjectNode output = MAPPER.createObjectNode();
 
@@ -84,25 +126,24 @@ public class JsonOutput {
         return errorAccount;
     }
 
-    private static ObjectNode writeCard(Card card) {
-        ObjectNode cardNode = MAPPER.createObjectNode();
-
-        cardNode.put("cardNumber", card.getNumber());
-        cardNode.put("status", card.getStatus());
-
-        return cardNode;
-    }
-
-    public static ObjectNode eraseAccount(CommandInput command, Account account) {
+    /**
+     * Method responsible for writing a JSON output for deleting an account. If the account has a
+     * balance different from 0,an error message is added to the output.
+     * @param command the command input that contains information about the command
+     * @param account the account to be deleted
+     * @return the output as a JSON object
+     */
+    public static ObjectNode eraseAccount(final CommandInput command, final Account account) {
         ObjectNode deleteAccount = MAPPER.createObjectNode();
         ObjectNode output = MAPPER.createObjectNode();
 
         deleteAccount.put("command", command.getCommand());
 
-
+        // check if the account has a balance different from 0
+        // if it has, add an error message to the output
         if (account.getBalance() != 0) {
-            output.put("error", "Account couldn't be deleted - see org.poo.transactions for " +
-                    "details");
+            output.put("error", "Account couldn't be deleted - see org.poo.transactions for "
+                    + "details");
             output.put("timestamp", command.getTimestamp());
         } else {
             output.put("success", "Account deleted");
@@ -115,7 +156,12 @@ public class JsonOutput {
         return deleteAccount;
     }
 
-    public static ObjectNode cardNotFound(CommandInput command) {
+    /**
+     * Method responsible for writing an error message when a card is not found.
+     * @param command the command input that contains information about the command
+     * @return the error message as a JSON object
+     */
+    public static ObjectNode cardNotFound(final CommandInput command) {
         ObjectNode errorCard = MAPPER.createObjectNode();
         ObjectNode output = MAPPER.createObjectNode();
 
@@ -130,8 +176,13 @@ public class JsonOutput {
         return errorCard;
     }
 
-    public static ObjectNode writeTransactions(CommandInput commandInput,  SetupBank bank,
-                                               User user) {
+    /**
+     * Method responsible for writing a JSON output for writing transactions.
+     * @param commandInput the command input that contains information about the command
+     * @param user the user that contains the transactions
+     * @return the transactions as a JSON object
+     */
+    public static ObjectNode writeTransactions(final CommandInput commandInput, final User user) {
         ObjectNode transactionsOutput = MAPPER.createObjectNode();
 
         transactionsOutput.put("command", commandInput.getCommand());
@@ -149,18 +200,28 @@ public class JsonOutput {
         return  transactionsOutput;
     }
 
-    public static ObjectNode writeTransaction(Transaction transaction) {
+    /**
+     * Helper method responsible for writing a transaction in JSON format.
+     * @param transaction the transaction to be written
+     * @return the transaction as a JSON object
+     */
+    private static ObjectNode writeTransaction(final Transaction transaction) {
         return MAPPER.valueToTree(transaction);
     }
 
-    public static ObjectNode writeErrorSavingAccount(CommandInput command) {
+    /**
+     * Method responsible for writing an error message when account is savings.
+     * @param command the command input that contains information about the command
+     * @return the error message as a JSON object
+     */
+    public static ObjectNode writeErrorSavingAccount(final CommandInput command) {
         ObjectNode errorSavingAccount = MAPPER.createObjectNode();
         ObjectNode output = MAPPER.createObjectNode();
 
         errorSavingAccount.put("command", command.getCommand());
 
         output.put("timestamp", command.getTimestamp());
-        output.put("description", "This is not a savings account");
+        output.put("description", "Account is not of type savings.");
 
         errorSavingAccount.set("output", output);
         errorSavingAccount.put("timestamp", command.getTimestamp());
@@ -168,8 +229,15 @@ public class JsonOutput {
         return errorSavingAccount;
     }
 
-    public static ObjectNode writeClassicReport(CommandInput command, Account account,
-                                                List<Transaction> transactions) {
+    /**
+     * Method responsible for writing a JSON output for a classic report.
+     * @param command the command input that contains information about the command
+     * @param account the account that contains the transactions
+     * @param transactions the transactions to be written
+     * @return the classic report as a JSON object
+     */
+    public static ObjectNode writeClassicReport(final CommandInput command, final Account account,
+                                                final List<Transaction> transactions) {
         ObjectNode report = MAPPER.createObjectNode();
         report.put("command", command.getCommand());
 
@@ -192,9 +260,17 @@ public class JsonOutput {
         return report;
     }
 
-    public static ObjectNode writeSpendingReport(CommandInput command, Account account,
-                                                 List<Transaction> transactions,
-                                                 Map<String, Commerciant> commerciants) {
+    /**
+     * Method responsible for writing a JSON output for a spending report.
+     * @param command the command input that contains information about the command
+     * @param account the account that contains the transactions
+     * @param transactions the transactions to be written
+     * @param commerciants the commerciants that received money
+     * @return the spending report as a JSON object
+     */
+    public static ObjectNode writeSpendingReport(final CommandInput command, final Account account,
+                                                 final List<Transaction> transactions,
+                                                 final Map<String, Commerciant> commerciants) {
         ObjectNode report = MAPPER.createObjectNode();
         report.put("command", command.getCommand());
 
@@ -213,10 +289,11 @@ public class JsonOutput {
 
         ArrayNode commerciansArray = MAPPER.createArrayNode();
 
+        // write the commerciants that received money
         for (Commerciant commerciant : commerciants.values()) {
             ObjectNode commerciantJson = MAPPER.createObjectNode();
 
-            commerciantJson.put("commerciant", commerciant.getName());
+            commerciantJson.put("commerciant", commerciant.getCommerciant());
             commerciantJson.put("total", commerciant.getMoneyReceived());
 
             commerciansArray.add(commerciantJson);
@@ -230,7 +307,13 @@ public class JsonOutput {
         return report;
     }
 
-    public static ObjectNode accountNotEligible(CommandInput command) {
+    /**
+     * Method responsible for writing an error message when an account is not eligible for a
+     * spending report.
+     * @param command the command input that contains information about the command
+     * @return the error message as a JSON object
+     */
+    public static ObjectNode accountNotEligible(final CommandInput command) {
         ObjectNode errorAccount = MAPPER.createObjectNode();
         ObjectNode output = MAPPER.createObjectNode();
 
