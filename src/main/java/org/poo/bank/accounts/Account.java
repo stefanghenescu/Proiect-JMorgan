@@ -27,6 +27,8 @@ public abstract class Account {
     private ArrayList<Card> cards = new ArrayList<>();
     private User owner;
     private ArrayList<Transaction> transactions = new ArrayList<>();
+    private double moneySpent = 0;
+
 
     public Account(final CommandInput commandInput) {
         iban = Utils.generateIBAN();
@@ -92,9 +94,14 @@ public abstract class Account {
      * @param transaction the transaction to be added
      */
     public void addTransaction(final Transaction transaction) {
-        transactions.add(transaction);
+        if (transaction != null) {
+            transactions.add(transaction);
+        }
     }
 
+    public void addMoneySpent(double moneySpent) {
+        this.moneySpent += moneySpent;
+    }
     /**
      * This method will add interest rate for a savings account and for a classic account will
      * print an error.
