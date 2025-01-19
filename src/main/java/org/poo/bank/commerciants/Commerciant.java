@@ -1,4 +1,4 @@
-package org.poo.bank;
+package org.poo.bank.commerciants;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +14,7 @@ public class Commerciant {
     private int id;
     private String account;
     private String type;
-    private String cashbackStrategy;
+    private CashbackStrategy cashbackStrategy;
     private double moneyReceived = 0;
 
     public Commerciant(final CommerciantInput commerciantInput) {
@@ -22,7 +22,7 @@ public class Commerciant {
         id = commerciantInput.getId();
         account = commerciantInput.getAccount();
         type = commerciantInput.getType();
-        cashbackStrategy = commerciantInput.getCashbackStrategy();
+        cashbackStrategy = getCashbackStrategy(commerciantInput.getCashbackStrategy());
     }
 
     /**
@@ -31,6 +31,14 @@ public class Commerciant {
      */
     public void receiveMoney(final double amount) {
         moneyReceived += amount;
+    }
+
+    public CashbackStrategy getCashbackStrategy(String cashbackStrategy) {
+        return switch (cashbackStrategy) {
+            case "spendingThreshold" -> new SpendingThresholdCashback();
+            case "nrOfTransactions" -> new NrOfTransactionsCashbak();
+            default -> null;
+        };
     }
 
 }
