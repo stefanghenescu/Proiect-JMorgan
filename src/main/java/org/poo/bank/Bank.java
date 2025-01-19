@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.poo.bank.accounts.Account;
 import org.poo.bank.cards.Card;
+import org.poo.bank.commerciants.Commerciant;
 import org.poo.commands.*;
 import org.poo.fileio.*;
 
@@ -24,7 +25,8 @@ public final class Bank {
     private Map<String, Card> cards = new HashMap<>();
     private ExchangeRates exchangeRates = new ExchangeRates();
     private Map<String, String> aliases = new HashMap<>();
-    private Map<String, Commerciant> commerciants = new HashMap<>();
+    private Map<String, Commerciant> commerciantsByAccount = new HashMap<>();
+    private Map<String, Commerciant> commerciantsByName = new HashMap<>();
     private ArrayNode output;
 
     public Bank(final ObjectInput input, final ArrayNode output) {
@@ -40,7 +42,9 @@ public final class Bank {
 
         for (CommerciantInput commerciantInput : input.getCommerciants()) {
             Commerciant commerciant = new Commerciant(commerciantInput);
-            commerciants.put(commerciant.getCommerciant(), commerciant);
+            commerciantsByAccount.put(commerciant.getAccount(), commerciant);
+            commerciantsByName.put(commerciant.getCommerciant(), commerciant);
+            aliases.put(commerciant.getCommerciant(), commerciant.getCommerciant());
         }
 
         this.output = output;
@@ -88,6 +92,20 @@ public final class Bank {
         return cards.get(cardNumber);
     }
 
+    public Commerciant getCommerciantByAccount(final String commerciantAccount) {
+        if (!commerciantsByAccount.containsKey(commerciantAccount)) {
+            throw new NoSuchElementException("Commerciant not found");
+        }
+        return commerciantsByAccount.get(commerciantAccount);
+    }
+
+    public Commerciant getCommerciantByName(final String commerciantName) {
+        if (!commerciantsByName.containsKey(commerciantName)) {
+            throw new NoSuchElementException("Commerciant not found");
+        }
+        return commerciantsByName.get(commerciantName);
+    }
+
     /**
      * Method that executes a command given in the input. This is part of the command pattern.
      * @param input the command input to be performed.
@@ -115,7 +133,7 @@ public final class Bank {
             case "deleteCard" -> new DeleteCardCommand(this, input);
             case "setMinBalance" -> new SetMinBalanceCommand(this, input);
             case "payOnline" -> new PayOnlineCommand(this, input, output);
-            case "sendMoney" -> new SendMoneyCommand(this, input);
+            case "sendMoney" -> new SendMoneyCommand(this, input, output);
             case "printTransactions" -> new PrintTransactionsCommand(this, input, output);
             case "setAlias" -> new SetAliasCommand(this, input);
             case "checkCardStatus" -> new CheckCardStatusCommand(this, input, output);
@@ -125,6 +143,7 @@ public final class Bank {
             case "report", "spendingsReport" -> new MakeReportCommand(this, input, output);
             case "withdrawSavings" -> new WithdrawSavingsCommand(this, input, output);
             case "upgradePlan" -> new UpgradePlanCommand(this, input, output);
+            case "cashWithdrawal" -> new CashWithdrawalCommand(this, input, output);
             default -> null;
         };
     }
