@@ -1,9 +1,13 @@
 package org.poo.commands;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import org.poo.bank.User;
 import org.poo.bank.accounts.Account;
 import org.poo.bank.Bank;
+import org.poo.bank.commerciants.Commerciant;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
+import org.poo.utils.JsonOutput;
 
 import java.util.NoSuchElementException;
 
@@ -15,10 +19,12 @@ public final class SendMoneyCommand implements Command {
     private static final double ROUNDING = 10000.0;
     private final Bank bank;
     private final CommandInput command;
+    private final ArrayNode output;
 
-    public SendMoneyCommand(final Bank bank, final CommandInput command) {
+    public SendMoneyCommand(final Bank bank, final CommandInput command, final ArrayNode output) {
         this.bank = bank;
         this.command = command;
+        this.output = output;
     }
 
     /**
@@ -37,20 +43,65 @@ public final class SendMoneyCommand implements Command {
         String receiverAccountIBAN = bank.getAliases().get(command.getReceiver());
 
         Account senderAccount;
-        Account receiverAccount;
+        Account receiverAccount = null;
+
         try {
-            senderAccount = bank.getAccount(command.getAccount());
-            receiverAccount = bank.getAccount(receiverAccountIBAN);
+            bank.getUser(command.getEmail());
         } catch (NoSuchElementException e) {
+            output.add(JsonOutput.userNotFound(command));
             return;
         }
 
+        try {
+            senderAccount = bank.getAccount(command.getAccount());
+        } catch (NoSuchElementException e2) {
+            return;
+        }
+
+        try {
+            receiverAccount = bank.getAccount(receiverAccountIBAN); // Throws exception if not found
+        } catch (NoSuchElementException e) {
+            Commerciant commerciant;
+            try {
+                commerciant = bank.getCommerciantByAccount(receiverAccountIBAN);
+            } catch (NoSuchElementException noCommerciant) {
+                output.add(JsonOutput.userNotFound(command));
+                return; // Receiver not found and not a commerciant
+            }
+            User user = senderAccount.getOwner();
+
+            double commission = user.getPlanStrategy().calculateCommission(command.getAmount(), bank,
+                    senderAccount.getCurrency());
+
+            double amountWithdrawn = senderAccount.withdraw(command.getAmount() + commission);
+
+            if (amountWithdrawn == 0 && command.getAmount() != 0) {
+                // Add a transaction with an error message
+                Transaction transactionSender = new Transaction.TransactionBuilder(command.getTimestamp(),
+                        "Insufficient funds")
+                        .build();
+                senderAccount.getOwner().addTransaction(transactionSender);
+                senderAccount.addTransaction(transactionSender);
+                return;
+            }
+
+            // Calculate cashback
+            commerciant.getCashbackStrategy().cashback(command.getAmount(), senderAccount, bank);
+            return;
+        }
+        User user = senderAccount.getOwner();
+
+        double commission = user.getPlanStrategy().calculateCommission(command.getAmount(), bank,
+                senderAccount.getCurrency());
+
         // take the money from the sender account
-        double amountWithdrawn = senderAccount.withdraw(command.getAmount());
+        double amountWithdrawn = senderAccount.withdraw(command.getAmount() + commission);
+        amountWithdrawn -= commission;
 
         // convert in receiver account currency
         double exchangeRate = bank.getExchangeRates().getRate(senderAccount.getCurrency(),
                 receiverAccount.getCurrency());
+
         double amount = amountWithdrawn * exchangeRate;
 
         double amountRounded = Math.round(amount * ROUNDING) / ROUNDING;
@@ -62,7 +113,7 @@ public final class SendMoneyCommand implements Command {
         Transaction transactionReceiver = null;
 
         // if the sender does not have enough money, add a transaction with an error message
-        if (amountWithdrawn == 0) {
+        if (amountWithdrawn == 0 && command.getAmount() != 0) {
             // add transaction with an error message
             transactionSender = new Transaction.TransactionBuilder(command.getTimestamp(),
                     "Insufficient funds")
@@ -84,7 +135,6 @@ public final class SendMoneyCommand implements Command {
                     .amountString(amountRounded + " " + receiverAccount.getCurrency())
                     .transferType("received")
                     .build();
-
         }
         senderAccount.getOwner().addTransaction(transactionSender);
         senderAccount.addTransaction(transactionSender);

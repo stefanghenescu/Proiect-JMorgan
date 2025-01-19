@@ -1,9 +1,11 @@
 package org.poo.commands;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import org.poo.bank.User;
 import org.poo.bank.accounts.Account;
 import org.poo.bank.cards.Card;
 import org.poo.bank.Bank;
+import org.poo.bank.commerciants.Commerciant;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.JsonOutput;
 
@@ -39,12 +41,18 @@ public final class PayOnlineCommand implements Command {
         }
 
         Account cardAccount = card.getOwner();
+        User user = cardAccount.getOwner();
+        Commerciant commerciant = bank.getCommerciantByName(command.getCommerciant());
 
         // convert in account currency
         double exchangeRate = bank.getExchangeRates().getRate(command.getCurrency(),
                                                                 cardAccount.getCurrency());
         double amount = command.getAmount() * exchangeRate;
+        double commission = user.getPlanStrategy().calculateCommission(amount, bank, cardAccount.getCurrency());
 
-        card.payOnline(amount, command);
+        if (card.payOnline(amount, command)) {
+            cardAccount.withdraw(commission);
+            commerciant.getCashbackStrategy().cashback(amount, cardAccount, bank);
+        }
     }
 }
