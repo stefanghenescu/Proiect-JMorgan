@@ -3,7 +3,7 @@ package org.poo.bank;
 import lombok.Getter;
 import org.poo.bank.accounts.Account;
 import org.poo.bank.cards.Card;
-import org.poo.bank.commission.*;
+import org.poo.bank.plans.*;
 import org.poo.fileio.UserInput;
 import org.poo.transactions.Transaction;
 
@@ -24,7 +24,7 @@ public class User {
     private final String birthDate;
     private final String occupation;
     private String plan;
-    private CommissionStrategy commissionStrategy;
+    private PlanStrategy planStrategy;
     private final ArrayList<Account> accounts = new ArrayList<>();
     private final List<Transaction> transactions = new ArrayList<>();
 
@@ -39,7 +39,7 @@ public class User {
         } else {
             plan = "standard";
         }
-        setCommissionStrategy(plan);
+        setPlanStrategy(plan);
     }
 
     /**
@@ -76,7 +76,9 @@ public class User {
      * @param transaction the transaction to be added
      */
     public void addTransaction(final Transaction transaction) {
-        transactions.add(transaction);
+        if (transaction != null) {
+            transactions.add(transaction);
+        }
     }
 
     public String upgradePlan(final String newPlan, Account account, Bank bank) {
@@ -97,7 +99,7 @@ public class User {
         account.withdraw(fee * exchangeRate);
 
         plan = newPlan;
-        setCommissionStrategy(newPlan);
+        setPlanStrategy(newPlan);
         return "Upgrade plan";
     }
 
@@ -125,19 +127,19 @@ public class User {
         return 0;
     }
 
-    public void setCommissionStrategy(final String plan) {
+    public void setPlanStrategy(final String plan) {
         switch (plan) {
             case "student":
-                commissionStrategy = new StudentCommission();
+                planStrategy = new StudentPlan();
                 break;
             case "standard":
-                commissionStrategy = new StandardCommission();
+                planStrategy = new StandardPlan();
                 break;
             case "silver":
-                commissionStrategy = new SilverCommission();
+                planStrategy = new SilverPlan();
                 break;
             case "gold":
-                commissionStrategy = new GoldCommission();
+                planStrategy = new GoldPlan();
                 break;
         }
     }
