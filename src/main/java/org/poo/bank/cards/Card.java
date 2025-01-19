@@ -33,7 +33,7 @@ public class Card {
      * @return true if the payment was successful, false otherwise
      */
     public boolean payOnline(final double amount, final CommandInput command) {
-        Transaction transaction;
+        Transaction transaction = null;
         long timestamp = command.getTimestamp();
         String commerciant = command.getCommerciant();
         boolean successPayment = false;
@@ -43,12 +43,12 @@ public class Card {
             transaction = new Transaction.TransactionBuilder(timestamp,
                     "The card is frozen")
                     .build();
-        } else if (owner.withdraw(amount) == 0) {
+        } else if (owner.withdraw(amount) == 0 && amount != 0) {
             // add transaction with an error message
             transaction = new Transaction.TransactionBuilder(timestamp,
                     "Insufficient funds")
                     .build();
-        } else {
+        } else if (amount != 0) {
             // add transaction with the payment
             transaction = new Transaction.TransactionBuilder(timestamp,
                     "Card payment")
@@ -63,6 +63,37 @@ public class Card {
         owner.getOwner().addTransaction(transaction);
         owner.addTransaction(transaction);
         return successPayment;
+    }
+
+    public boolean atmWithdraw(final double amount, final CommandInput command) {
+        Transaction transaction = null;
+        long timestamp = command.getTimestamp();
+        boolean successWithdraw = false;
+
+        if (status.equals("frozen")) {
+            // add transaction with an error message
+            transaction = new Transaction.TransactionBuilder(timestamp,
+                    "The card is frozen")
+                    .build();
+        } else if (owner.withdraw(amount) == 0 && amount != 0) {
+            // add transaction with an error message
+            transaction = new Transaction.TransactionBuilder(timestamp,
+                    "Insufficient funds")
+                    .build();
+        } else if (amount != 0) {
+            // add transaction with the payment
+            transaction = new Transaction.TransactionBuilder(timestamp,
+                    "Cash withdrawal of " + command.getAmount())
+                    .amount(command.getAmount())
+                    .build();
+
+            successWithdraw = true;
+        }
+
+        // owner is the account and owner.getOwner() is the user to where the transaction is added
+        owner.getOwner().addTransaction(transaction);
+        owner.addTransaction(transaction);
+        return successWithdraw;
     }
 
     /**
