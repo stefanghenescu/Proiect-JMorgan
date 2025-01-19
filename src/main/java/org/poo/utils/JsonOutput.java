@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.bank.accounts.Account;
 import org.poo.bank.cards.Card;
-import org.poo.bank.Commerciant;
+import org.poo.bank.commerciants.Commerciant;
 import org.poo.bank.Bank;
 import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
@@ -174,6 +174,26 @@ public final class JsonOutput {
         errorCard.put("timestamp", command.getTimestamp());
 
         return errorCard;
+    }
+
+    /**
+     * Method responsible for writing an error message when a user is not found.
+     * @param command the command input that contains information about the command
+     * @return the error message as a JSON object
+     */
+    public static ObjectNode userNotFound(final CommandInput command) {
+        ObjectNode errorUser = MAPPER.createObjectNode();
+        ObjectNode output = MAPPER.createObjectNode();
+
+        errorUser.put("command", command.getCommand());
+
+        output.put("timestamp", command.getTimestamp());
+        output.put("description", "User not found");
+
+        errorUser.set("output", output);
+        errorUser.put("timestamp", command.getTimestamp());
+
+        return errorUser;
     }
 
     /**
