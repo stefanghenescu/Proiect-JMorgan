@@ -2,7 +2,7 @@ package org.poo.reports;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.bank.accounts.Account;
-import org.poo.bank.Commerciant;
+import org.poo.bank.commerciants.Commerciant;
 import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
 import org.poo.transactions.Transaction;
@@ -74,7 +74,8 @@ public class SpendingReport implements ReportStrategy {
             Commerciant commerciant = commerciants.get(transaction.getCommerciant());
             commerciant.receiveMoney(transaction.getAmount());
         } else {
-            Commerciant commerciant = bank.getCommerciants().get(transaction.getCommerciant());
+            Commerciant commerciant = bank.getCommerciantsByName().get(transaction.getCommerciant());
+            commerciant.setMoneyReceived(0);
             commerciant.receiveMoney(transaction.getAmount());
             commerciants.put(transaction.getCommerciant(), commerciant);
         }
