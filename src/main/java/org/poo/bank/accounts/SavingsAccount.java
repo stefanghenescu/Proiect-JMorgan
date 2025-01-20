@@ -27,7 +27,9 @@ public final class SavingsAccount extends Account {
         addFunds(interest);
 
         Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
-                "Interest rate added")
+                "Interest rate income")
+                .amount(interest)
+                .currency(this.getCurrency())
                 .build();
 
         getOwner().addTransaction(transaction);
