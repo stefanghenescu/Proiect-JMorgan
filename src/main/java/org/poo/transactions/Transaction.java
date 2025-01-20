@@ -19,11 +19,15 @@ public final class Transaction {
     private final String account;
     private final String accountIBAN;
     private final String senderIBAN;
+    private final String classicAccountIBAN;
+    private final String savingsAccountIBAN;
     private final String receiverIBAN;
     private final String transferType;
     private final String commerciant;
     private final String currency;
     private final List<String> involvedAccounts;
+    private final List<Double> amountForUsers;
+    private final String splitPaymentType;
     private final String newPlanType;
     private final String error;
 
@@ -46,12 +50,16 @@ public final class Transaction {
         accountIBAN = builder.accountIBAN;
         senderIBAN = builder.senderIBAN;
         receiverIBAN = builder.receiverIBAN;
+        classicAccountIBAN = builder.classicAccountIBAN;
+        savingsAccountIBAN = builder.savingsAccountIBAN;
         amount = builder.amount;
         amountString = builder.amountString;
         transferType = builder.transferType;
         commerciant = builder.commerciant;
         currency = builder.currency;
         involvedAccounts = builder.involvedAccounts;
+        amountForUsers = builder.amountForUsers;
+        splitPaymentType = builder.splitPaymentType;
         newPlanType = builder.newPlanType;
         error = builder.error;
     }
@@ -81,12 +89,16 @@ public final class Transaction {
         private String accountIBAN;
         private String senderIBAN;
         private String receiverIBAN;
+        private String classicAccountIBAN;
+        private String savingsAccountIBAN;
         private Double amount;
         private String amountString;
         private String transferType;
         private String commerciant;
         private String currency;
         private List<String> involvedAccounts;
+        private List<Double> amountForUsers;
+        private String splitPaymentType;
         private String newPlanType;
         private String error;
 
@@ -156,6 +168,26 @@ public final class Transaction {
         }
 
         /**
+         * Method that sets the classic account IBAN of the transaction
+         * @param classicAccountIBAN the classic account IBAN for the transaction
+         * @return the current builder instance
+         */
+        public TransactionBuilder classicAccountIBAN(final String classicAccountIBAN) {
+            this.classicAccountIBAN = classicAccountIBAN;
+            return this;
+        }
+
+        /**
+         * Method that sets the savings account IBAN of the transaction
+         * @param savingsAccountIBAN the savings account IBAN for the transaction
+         * @return the current builder instance
+         */
+        public TransactionBuilder savingsAccountIBAN(final String savingsAccountIBAN) {
+            this.savingsAccountIBAN = savingsAccountIBAN;
+            return this;
+        }
+
+        /**
          * Method that sets the amount of the transaction as a Double
          * @param transactionAmount the amount of the transaction as a Double
          * @return the current builder instance
@@ -214,6 +246,26 @@ public final class Transaction {
          */
         public TransactionBuilder involvedAccounts(final List<String> accountsInvolved) {
             involvedAccounts = accountsInvolved;
+            return this;
+        }
+
+        /**
+         * Method that sets the amount for each user in the transaction when splitting a payment
+         * @param amountForUsers the amount for each user in the transaction
+         * @return the current builder instance
+         */
+        public TransactionBuilder amountForUsers(final List<Double> amountForUsers) {
+            this.amountForUsers = amountForUsers;
+            return this;
+        }
+
+        /**
+         * Method that sets the split payment type of the transaction
+         * @param splitType the split payment type for the transaction
+         * @return the current builder instance
+         */
+        public TransactionBuilder splitPaymentType(final String splitType) {
+            splitPaymentType = splitType;
             return this;
         }
 
