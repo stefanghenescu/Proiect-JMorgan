@@ -96,29 +96,29 @@ public final class SendMoneyCommand implements Command {
 
         // take the money from the sender account
         double amountWithdrawn = senderAccount.withdraw(command.getAmount() + commission);
-        amountWithdrawn -= commission;
-
-        // convert in receiver account currency
-        double exchangeRate = bank.getExchangeRates().getRate(senderAccount.getCurrency(),
-                receiverAccount.getCurrency());
-
-        double amount = amountWithdrawn * exchangeRate;
-
-        double amountRounded = Math.round(amount * ROUNDING) / ROUNDING;
-
-        // add the money to the receiver account
-        receiverAccount.addFunds(amount);
 
         Transaction transactionSender;
         Transaction transactionReceiver = null;
 
         // if the sender does not have enough money, add a transaction with an error message
-        if (amountWithdrawn == 0 && command.getAmount() != 0) {
+        if (amountWithdrawn <= 0 && command.getAmount() != 0) {
             // add transaction with an error message
             transactionSender = new Transaction.TransactionBuilder(command.getTimestamp(),
                     "Insufficient funds")
                     .build();
         } else {
+            amountWithdrawn -= commission;
+
+            // convert in receiver account currency
+            double exchangeRate = bank.getExchangeRates().getRate(senderAccount.getCurrency(),
+                    receiverAccount.getCurrency());
+
+            double amount = amountWithdrawn * exchangeRate;
+
+            double amountRounded = Math.round(amount * ROUNDING) / ROUNDING;
+
+            // add the money to the receiver account
+            receiverAccount.addFunds(amount);
             // add transaction for sender and receiver
             transactionSender = new Transaction.TransactionBuilder(command.getTimestamp(),
                     command.getDescription())
