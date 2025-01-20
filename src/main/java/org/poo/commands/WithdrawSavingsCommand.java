@@ -10,7 +10,7 @@ import org.poo.utils.JsonOutput;
 
 import java.util.NoSuchElementException;
 
-public class WithdrawSavingsCommand implements Command {
+public final class WithdrawSavingsCommand implements Command {
     private final Bank bank;
     private final CommandInput command;
     private final ArrayNode output;
@@ -22,6 +22,9 @@ public class WithdrawSavingsCommand implements Command {
         this.output = output;
     }
 
+    /**
+     * Method responsible for withdrawing money from a savings account.
+     */
     @Override
     public void execute() {
         Account savingsAccount;
@@ -32,6 +35,7 @@ public class WithdrawSavingsCommand implements Command {
             return;
         }
 
+        // check if the account is a savings account
         if (!savingsAccount.getAccountType().equals("savings")) {
             output.add(JsonOutput.writeErrorSavingAccount(command));
             return;
@@ -39,6 +43,7 @@ public class WithdrawSavingsCommand implements Command {
 
         User user = savingsAccount.getOwner();
 
+        // check if the user has the minimum age required
         if (!user.has21Years()) {
             Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
                     "You don't have the minimum age required.")
@@ -48,6 +53,8 @@ public class WithdrawSavingsCommand implements Command {
             return;
         }
 
+        // take the first classic account with the same currency as the savings account
+        // if it doesn't exist, it is null
         Account classicAccount = user.getAccounts().stream()
                 .filter(account -> account.getAccountType().equalsIgnoreCase("Classic")
                         && account.getCurrency().equalsIgnoreCase(command.getCurrency()))
@@ -63,10 +70,10 @@ public class WithdrawSavingsCommand implements Command {
             return;
         }
 
+        // add the money to the classic account
         double exchangeRate = bank.getExchangeRates().getRate(command.getCurrency(),
                                                                 savingsAccount.getCurrency());
-        double amountWithdraw = savingsAccount.withdraw(command.getAmount() *
-                                                                exchangeRate);
+        double amountWithdraw = savingsAccount.withdraw(command.getAmount() * exchangeRate);
 
         if (amountWithdraw == 0 && command.getAmount() != 0) {
             Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),

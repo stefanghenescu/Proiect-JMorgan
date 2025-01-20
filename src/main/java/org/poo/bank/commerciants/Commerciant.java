@@ -33,8 +33,21 @@ public class Commerciant {
         moneyReceived += amount;
     }
 
-    public CashbackStrategy getCashbackStrategy(String cashbackStrategy) {
-        return switch (cashbackStrategy) {
+    /**
+     * Returns the appropriate strategy implementation based on the
+     * specified type of cashback and how it's calculated.
+     * It's like a factory method for the cashback strategies.
+     * @param cashbackType It specifies the type of cashback strategy to be used. Supported values:
+     *                     <ul>
+     *                         <li>{@code "spendingThreshold"}: Cashback based on reaching a certain
+     *                         spending threshold.</li>
+     *                         <li>{@code "nrOfTransactions"}: Cashback based on the number of
+     *                         transactions made.</li>
+     *                     </ul>
+     * @return The appropriate cashback strategy implementation.
+     */
+    public CashbackStrategy getCashbackStrategy(final String cashbackType) {
+        return switch (cashbackType) {
             case "spendingThreshold" -> new SpendingThresholdCashback();
             case "nrOfTransactions" -> new NrOfTransactionsCashbak();
             default -> null;

@@ -92,6 +92,12 @@ public final class Bank {
         return cards.get(cardNumber);
     }
 
+    /**
+     * Method that finds a commerciant based on its account. If the commerciant is not found,
+     * an exception is thrown. This exception is caught in the command classes where it's called.
+     * @param commerciantAccount the account of the commerciant.
+     * @return the commerciant with the given account.
+     */
     public Commerciant getCommerciantByAccount(final String commerciantAccount) {
         if (!commerciantsByAccount.containsKey(commerciantAccount)) {
             throw new NoSuchElementException("Commerciant not found");
@@ -99,6 +105,12 @@ public final class Bank {
         return commerciantsByAccount.get(commerciantAccount);
     }
 
+    /**
+     * Method that finds a commerciant based on its name. If the commerciant is not found,
+     * an exception is thrown. This exception is caught in the command classes where it's called.
+     * @param commerciantName the name of the commerciant.
+     * @return the commerciant with the given name.
+     */
     public Commerciant getCommerciantByName(final String commerciantName) {
         if (!commerciantsByName.containsKey(commerciantName)) {
             throw new NoSuchElementException("Commerciant not found");

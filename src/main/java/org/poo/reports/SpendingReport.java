@@ -74,7 +74,9 @@ public class SpendingReport implements ReportStrategy {
             Commerciant commerciant = commerciants.get(transaction.getCommerciant());
             commerciant.receiveMoney(transaction.getAmount());
         } else {
-            Commerciant commerciant = bank.getCommerciantsByName().get(transaction.getCommerciant());
+            // get the commerciant from the bank and add it to the map of commerciants
+            Commerciant commerciant = bank.getCommerciantsByName().get(transaction.
+                                                                    getCommerciant());
             commerciant.setMoneyReceived(0);
             commerciant.receiveMoney(transaction.getAmount());
             commerciants.put(transaction.getCommerciant(), commerciant);

@@ -65,6 +65,12 @@ public class Card {
         return successPayment;
     }
 
+    /**
+     * Method for withdrawing cash. It adds a transaction with an error message or with the payment.
+     * @param amount the amount of money to be withdrawn
+     * @param command the command that contains the information about the cash withdrawal
+     * @return true if the withdrawal was successful, false otherwise
+     */
     public boolean atmWithdraw(final double amount, final CommandInput command) {
         Transaction transaction = null;
         long timestamp = command.getTimestamp();

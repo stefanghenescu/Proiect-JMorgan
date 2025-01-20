@@ -30,8 +30,6 @@ public final class SendMoneyCommand implements Command {
     /**
      * Method responsible for sending money from one account to another.
      * If the sender account does not have enough money, an error message is added to the output.
-     * Take into account the exchange rate between the sender and receiver accounts.
-     * Add transactions to the sender and receiver accounts.
      */
     @Override
     public void execute() {
@@ -54,13 +52,14 @@ public final class SendMoneyCommand implements Command {
 
         try {
             senderAccount = bank.getAccount(command.getAccount());
-        } catch (NoSuchElementException e2) {
+        } catch (NoSuchElementException e) {
             return;
         }
 
         try {
             receiverAccount = bank.getAccount(receiverAccountIBAN); // Throws exception if not found
         } catch (NoSuchElementException e) {
+            // the receiver is not a user, check if it is a commerciant
             Commerciant commerciant;
             try {
                 commerciant = bank.getCommerciantByAccount(receiverAccountIBAN);
@@ -70,15 +69,16 @@ public final class SendMoneyCommand implements Command {
             }
             User user = senderAccount.getOwner();
 
-            double commission = user.getPlanStrategy().calculateCommission(command.getAmount(), bank,
-                    senderAccount.getCurrency());
+            double commission = user.getPlanStrategy().calculateCommission(command.getAmount(),
+                                                                bank, senderAccount.getCurrency());
 
+            // take the money from the sender account with the commission
             double amountWithdrawn = senderAccount.withdraw(command.getAmount() + commission);
 
             if (amountWithdrawn == 0 && command.getAmount() != 0) {
                 // Add a transaction with an error message
-                Transaction transactionSender = new Transaction.TransactionBuilder(command.getTimestamp(),
-                        "Insufficient funds")
+                Transaction transactionSender = new Transaction.TransactionBuilder(
+                        command.getTimestamp(), "Insufficient funds")
                         .build();
                 senderAccount.getOwner().addTransaction(transactionSender);
                 senderAccount.addTransaction(transactionSender);
@@ -89,6 +89,8 @@ public final class SendMoneyCommand implements Command {
             commerciant.getCashbackStrategy().cashback(command.getAmount(), senderAccount, bank);
             return;
         }
+
+        // the receiver is a user
         User user = senderAccount.getOwner();
 
         double commission = user.getPlanStrategy().calculateCommission(command.getAmount(), bank,

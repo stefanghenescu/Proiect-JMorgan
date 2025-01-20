@@ -19,6 +19,11 @@ import java.util.List;
  */
 @Getter
 public class User {
+    private static final int PLAN_FEE_TO_SILVER = 100;
+    private static final int PLAN_FEE_TO_GOLD_FROM_SILVER = 250;
+    private static final int PLAN_FEE_TO_GOLD_FROM_STANDARD = 350;
+    private static final int MIN_AGE = 21;
+
     private final String firstName;
     private final String lastName;
     private final String email;
@@ -94,7 +99,7 @@ public class User {
      * @param bank the bank used to get the exchange rate for the upgrade fee
      * @return a message if the upgrade was successful or not and the reason why
      */
-    public String upgradePlan(final String newPlan, Account account, Bank bank) {
+    public String upgradePlan(final String newPlan, final Account account, final Bank bank) {
         if (plan.equals(newPlan)) {
             return "The user already has the " + newPlan + " plan.";
         }
@@ -122,8 +127,8 @@ public class User {
      * @return true if the user tries to downgrade their plan, false otherwise
      */
     private boolean downgradePlan(final String newPlan) {
-        if (plan.equals("gold") && (newPlan.equals("silver") || newPlan.equals("standard") ||
-                newPlan.equals("student"))) {
+        if (plan.equals("gold") && (newPlan.equals("silver") || newPlan.equals("standard")
+                || newPlan.equals("student"))) {
             return true;
         }
         if (plan.equals("silver") && (newPlan.equals("standard") || newPlan.equals("student"))) {
@@ -139,13 +144,13 @@ public class User {
      */
     private double planUpgradeFee(final String newPlan) {
         if (newPlan.equals("silver") && (plan.equals("standard") || plan.equals("student"))) {
-            return 100;
+            return PLAN_FEE_TO_SILVER;
         }
         if (newPlan.equals("gold") && plan.equals("silver")) {
-            return 250;
+            return PLAN_FEE_TO_GOLD_FROM_SILVER;
         }
         if (newPlan.equals("gold") && (plan.equals("standard") || plan.equals("student"))) {
-            return 350;
+            return PLAN_FEE_TO_GOLD_FROM_STANDARD;
         }
         return 0;
     }
@@ -153,10 +158,10 @@ public class User {
     /**
      * Method that sets the plan strategy for the user. This uses the factory pattern to create
      * the plan strategy based on the plan name.
-     * @param plan the plan name to set the strategy for the user
+     * @param planType the plan name to set the strategy for the user
      */
-    public void setPlanStrategy(final String plan) {
-        planStrategy = PlanFactory.getPlanStrategy(plan);
+    public void setPlanStrategy(final String planType) {
+        planStrategy = PlanFactory.getPlanStrategy(planType);
     }
 
     /**
@@ -172,14 +177,14 @@ public class User {
         // calculate the age of the user
         Period age = Period.between(birth, now);
 
-        return age.getYears() >= 21;
+        return age.getYears() >= MIN_AGE;
     }
 
     /**
      * Method that adds a pending payment to the user's list of pending payments.
      * @param splitPayment the pending payment to be added
      */
-    public void addPendingPayment(SplitPayment splitPayment) {
+    public void addPendingPayment(final SplitPayment splitPayment) {
         pendingPayments.add(splitPayment);
     }
 
@@ -187,7 +192,7 @@ public class User {
      * Method that removes a pending payment from the user's list of pending payments.
      * @param splitPayment the pending payment to be removed
      */
-    public void removePendingPayment(SplitPayment splitPayment) {
+    public void removePendingPayment(final SplitPayment splitPayment) {
         pendingPayments.remove(splitPayment);
     }
 }

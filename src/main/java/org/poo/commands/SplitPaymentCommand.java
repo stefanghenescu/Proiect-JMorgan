@@ -5,7 +5,6 @@ import org.poo.bank.User;
 import org.poo.bank.accounts.Account;
 import org.poo.bank.Bank;
 import org.poo.fileio.CommandInput;
-import org.poo.transactions.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +25,7 @@ public final class SplitPaymentCommand implements Command {
 
     /**
      * Method responsible for splitting a payment between multiple accounts.
-     * If any account does not have enough funds, an error transaction will be generated for every
-     * account. If all accounts have enough funds, the payment will be split between them.
+     * A split payment is created and added to the pending payments of the users.
      */
     @Override
     public void execute() {
@@ -35,6 +33,8 @@ public final class SplitPaymentCommand implements Command {
         List<Account> accounts = new ArrayList<>();
         List<User> users = new ArrayList<>();
 
+        // for every iban of the accounts, get the account and the user
+        // instantiate a split payment and add it to the pending payments of the users
         for (String iban : accountIBANs) {
             Account account;
             User user;

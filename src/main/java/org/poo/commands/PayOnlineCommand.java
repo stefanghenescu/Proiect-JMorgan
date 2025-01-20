@@ -32,6 +32,7 @@ public final class PayOnlineCommand implements Command {
      */
     @Override
     public void execute() {
+        // get the card if it exists
         Card card;
         try {
             card = bank.getCard(command.getCardNumber());
@@ -42,14 +43,19 @@ public final class PayOnlineCommand implements Command {
 
         Account cardAccount = card.getOwner();
         User user = cardAccount.getOwner();
+
+        // commerciant is needed for cashback
         Commerciant commerciant = bank.getCommerciantByName(command.getCommerciant());
 
         // convert in account currency
         double exchangeRate = bank.getExchangeRates().getRate(command.getCurrency(),
                                                                 cardAccount.getCurrency());
         double amount = command.getAmount() * exchangeRate;
-        double commission = user.getPlanStrategy().calculateCommission(amount, bank, cardAccount.getCurrency());
 
+        // calculate commission
+        double commission = user.getPlanStrategy().calculateCommission(amount, bank,
+                                                                        cardAccount.getCurrency());
+        // pay online, withdraw commission and apply cashback
         if (card.payOnline(amount, command)) {
             cardAccount.withdraw(commission);
             commerciant.getCashbackStrategy().cashback(amount, cardAccount, bank);

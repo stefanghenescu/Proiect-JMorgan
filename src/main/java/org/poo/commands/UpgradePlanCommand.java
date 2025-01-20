@@ -10,7 +10,7 @@ import org.poo.utils.JsonOutput;
 
 import java.util.NoSuchElementException;
 
-public class UpgradePlanCommand implements Command {
+public final class UpgradePlanCommand implements Command {
     private final Bank bank;
     private final CommandInput command;
     private final ArrayNode output;
@@ -21,6 +21,9 @@ public class UpgradePlanCommand implements Command {
         this.output = output;
     }
 
+    /**
+     * Method responsible for upgrading the plan of a specific user.
+     */
     @Override
     public void execute() {
         Account changePlanAccount;
@@ -33,9 +36,13 @@ public class UpgradePlanCommand implements Command {
 
         User changePlanUser = changePlanAccount.getOwner();
 
+        // try to upgrade the plan of the user
         String error = changePlanUser.upgradePlan(command.getNewPlanType(), changePlanAccount,
                 bank);
 
+        // create a transaction
+        // if there is an error, the transaction is an error transaction
+        // otherwise, the transaction is a successful upgrade plan transaction
         Transaction transaction;
         if (error != null) {
             transaction = new Transaction.TransactionBuilder(command.getTimestamp(),

@@ -129,21 +129,23 @@ public final class Transaction {
 
         /**
          * Method that sets the account IBAN of the transaction
-         * @param accountIBAN the account IBAN for the transaction
+         * @param accountIban the account IBAN for the transaction
          * @return the current builder instance
          */
-        public TransactionBuilder account(final String accountIBAN) {
-            account = accountIBAN;
+        public TransactionBuilder account(final String accountIban) {
+            account = accountIban;
             return this;
         }
 
         /**
          * Method that sets the account IBAN of the transaction
-         * @param account the account IBAN for the transaction
+         * It is different from the account method because it is used in the JSON output
+         * and the field name is different
+         * @param accountIban the account IBAN for the transaction
          * @return the current builder instance
          */
-        public TransactionBuilder accountIBAN(final String account) {
-            accountIBAN = account;
+        public TransactionBuilder accountIBAN(final String accountIban) {
+            accountIBAN = accountIban;
             return this;
         }
 
@@ -169,21 +171,21 @@ public final class Transaction {
 
         /**
          * Method that sets the classic account IBAN of the transaction
-         * @param classicAccountIBAN the classic account IBAN for the transaction
+         * @param classicIBAN the classic account IBAN for the transaction
          * @return the current builder instance
          */
-        public TransactionBuilder classicAccountIBAN(final String classicAccountIBAN) {
-            this.classicAccountIBAN = classicAccountIBAN;
+        public TransactionBuilder classicAccountIBAN(final String classicIBAN) {
+            this.classicAccountIBAN = classicIBAN;
             return this;
         }
 
         /**
          * Method that sets the savings account IBAN of the transaction
-         * @param savingsAccountIBAN the savings account IBAN for the transaction
+         * @param savingsIBAN the savings account IBAN for the transaction
          * @return the current builder instance
          */
-        public TransactionBuilder savingsAccountIBAN(final String savingsAccountIBAN) {
-            this.savingsAccountIBAN = savingsAccountIBAN;
+        public TransactionBuilder savingsAccountIBAN(final String savingsIBAN) {
+            this.savingsAccountIBAN = savingsIBAN;
             return this;
         }
 
@@ -251,11 +253,11 @@ public final class Transaction {
 
         /**
          * Method that sets the amount for each user in the transaction when splitting a payment
-         * @param amountForUsers the amount for each user in the transaction
+         * @param amountPerUsers the amount for each user in the transaction
          * @return the current builder instance
          */
-        public TransactionBuilder amountForUsers(final List<Double> amountForUsers) {
-            this.amountForUsers = amountForUsers;
+        public TransactionBuilder amountForUsers(final List<Double> amountPerUsers) {
+            this.amountForUsers = amountPerUsers;
             return this;
         }
 

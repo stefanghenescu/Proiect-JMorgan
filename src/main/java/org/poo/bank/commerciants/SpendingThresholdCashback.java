@@ -4,7 +4,7 @@ import org.poo.bank.Bank;
 import org.poo.bank.User;
 import org.poo.bank.accounts.Account;
 
-public class SpendingThresholdCashback implements CashbackStrategy {
+public final class SpendingThresholdCashback implements CashbackStrategy {
     @Override
     public void cashback(final double amount, final Account account, final Bank bank) {
         User user = account.getOwner();
@@ -13,8 +13,8 @@ public class SpendingThresholdCashback implements CashbackStrategy {
 
         account.addMoneySpent(amount * exchangeToRon);
 
-        double amountInRon = account.getMoneySpent();
-        double cashbackPercentage = user.getPlanStrategy().calculateCashBackPercentage(amountInRon);
+        double amountSpent = account.getMoneySpent();
+        double cashbackPercentage = user.getPlanStrategy().calculateCashBackPercentage(amountSpent);
 
         account.addFunds(amount * cashbackPercentage);
     }

@@ -18,16 +18,20 @@ public class RejectSplitPaymentCommand implements Command {
     private final CommandInput command;
     private final ArrayNode output;
 
-    public RejectSplitPaymentCommand(final Bank bank, final CommandInput command, final ArrayNode output) {
+    public RejectSplitPaymentCommand(final Bank bank, final CommandInput command,
+                                     final ArrayNode output) {
         this.bank = bank;
         this.command = command;
         this.output = output;
     }
 
+    /**
+     * Method responsible for rejecting a split payment for a specific user.
+     */
     @Override
     public void execute() {
+        // get the user if it exists
         User user;
-
         try {
             user = bank.getUser(command.getEmail());
         } catch (Exception e) {
@@ -35,14 +39,19 @@ public class RejectSplitPaymentCommand implements Command {
             return;
         }
 
+        // get the pending payments of the user
         List<SplitPayment> pendingPayments = user.getPendingPayments();
         if (pendingPayments.isEmpty()) {
             return;
         }
 
+        // select the first split payment that has not been accepted by the user (is not true) and
+        // has the same type as the command says
         Optional<SplitPayment> optionalSplitPayment = pendingPayments.stream()
                 .filter(payment -> payment.getType()
                         .equals(command.getSplitPaymentType()))
+                .filter(payment -> !Boolean.TRUE.equals(payment.getUserResponses()
+                                                                        .get(command.getEmail())))
                 .findFirst();
 
         if (optionalSplitPayment.isEmpty()) {
@@ -55,21 +64,28 @@ public class RejectSplitPaymentCommand implements Command {
 
         Transaction transaction;
 
+        // create the transaction for the split payment
+        // depending on the type of the split payment (equal or custom) the transactions fields
+        // are set differently
+        String splitMessage = String.format(SPLIT_PAYMENT_MESSAGE, splitPayment.getAmount(),
+                splitPayment.getCurrency());
+
         if (splitPayment.getType().equals("equal")) {
             transaction = new Transaction.TransactionBuilder(splitPayment.getTimestamp(),
-                    String.format(SPLIT_PAYMENT_MESSAGE, splitPayment.getAmount(), splitPayment.getCurrency()))
+                    splitMessage)
                     .currency(splitPayment.getCurrency())
                     .error("One user rejected the payment.")
                     .amount(splitPayment.getAmount())
                     .splitPaymentType(splitPayment.getType())
                     .build();
         } else {
+            // get the involved accounts in the split payment as Strings
             List<String> involvedAccounts = splitPayment.getAccounts().stream()
                     .map(Account::getIban)
                     .toList();
 
             transaction = new Transaction.TransactionBuilder(splitPayment.getTimestamp(),
-                    String.format(SPLIT_PAYMENT_MESSAGE, splitPayment.getAmount(), splitPayment.getCurrency()))
+                    splitMessage)
                     .currency(splitPayment.getCurrency())
                     .error("One user rejected the payment.")
                     .amountForUsers(splitPayment.getAmountForUsers())
@@ -82,6 +98,8 @@ public class RejectSplitPaymentCommand implements Command {
             account.addTransaction(transaction);
             account.getOwner().addTransaction(transaction);
         }
+
+        // remove the split payment from the user's pending payments
         splitPayment.clearForAllUsers();
     }
 }
