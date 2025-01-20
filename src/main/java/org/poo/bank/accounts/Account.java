@@ -10,6 +10,7 @@ import org.poo.transactions.Transaction;
 import org.poo.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * Class that represents a bank account. Each account a list of cards and transactions.
@@ -96,12 +97,18 @@ public abstract class Account {
     public void addTransaction(final Transaction transaction) {
         if (transaction != null) {
             transactions.add(transaction);
+            transactions.sort(Comparator.comparingLong(Transaction::getTimestamp));
         }
     }
 
-    public void addMoneySpent(double moneySpent) {
-        this.moneySpent += moneySpent;
+    /**
+     * Method that adds the amount of a transaction to the total amount of money spent
+     * @param moneyFromTransaction the amount spent in a transaction
+     */
+    public void addMoneySpent(final double moneyFromTransaction) {
+        moneySpent += moneyFromTransaction;
     }
+
     /**
      * This method will add interest rate for a savings account and for a classic account will
      * print an error.
