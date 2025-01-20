@@ -33,14 +33,21 @@ public class UpgradePlanCommand implements Command {
 
         User changePlanUser = changePlanAccount.getOwner();
 
-        String message = changePlanUser.upgradePlan(command.getNewPlanType(), changePlanAccount,
+        String error = changePlanUser.upgradePlan(command.getNewPlanType(), changePlanAccount,
                 bank);
 
-        Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
-                message)
-                .accountIBAN(command.getAccount())
-                .newPlanType(command.getNewPlanType())
-                .build();
+        Transaction transaction;
+        if (error != null) {
+            transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
+                    error)
+                    .build();
+        } else {
+            transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
+                    "Upgrade plan")
+                    .accountIBAN(command.getAccount())
+                    .newPlanType(command.getNewPlanType())
+                    .build();
+        }
 
         changePlanUser.addTransaction(transaction);
         changePlanAccount.addTransaction(transaction);
