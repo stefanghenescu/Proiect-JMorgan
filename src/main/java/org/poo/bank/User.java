@@ -10,6 +10,7 @@ import org.poo.transactions.Transaction;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class User {
     private PlanStrategy planStrategy;
     private final ArrayList<Account> accounts = new ArrayList<>();
     private final List<Transaction> transactions = new ArrayList<>();
-    private List<SplitPayment> pendingPayments = new ArrayList<>();
+    private final List<SplitPayment> pendingPayments = new ArrayList<>();
 
 
     public User(final UserInput userInput) {
@@ -63,6 +64,8 @@ public class User {
             return false;
         }
 
+        // delete all cards associated with the account using an iterator
+        // as we cannot modify the list while iterating over it
         Iterator<Card> iterator = account.getCards().iterator();
         while (iterator.hasNext()) {
             iterator.next();
@@ -80,12 +83,20 @@ public class User {
     public void addTransaction(final Transaction transaction) {
         if (transaction != null) {
             transactions.add(transaction);
+            transactions.sort(Comparator.comparingLong(Transaction::getTimestamp));
         }
     }
 
+    /**
+     * Method that tries to upgrade the user's plan to a new one.
+     * @param newPlan the new plan to upgrade to
+     * @param account the account the money will be withdrawn from for the upgrade fee
+     * @param bank the bank used to get the exchange rate for the upgrade fee
+     * @return a message if the upgrade was successful or not and the reason why
+     */
     public String upgradePlan(final String newPlan, Account account, Bank bank) {
         if (plan.equals(newPlan)) {
-            return "The user already has the " + newPlan + " plan";
+            return "The user already has the " + newPlan + " plan.";
         }
 
         if (downgradePlan(newPlan)) {
@@ -102,9 +113,14 @@ public class User {
 
         plan = newPlan;
         setPlanStrategy(newPlan);
-        return "Upgrade plan";
+        return null;
     }
 
+    /**
+     * Private method that checks if the user tries to downgrade their plan.
+     * @param newPlan the new plan the user wants to upgrade to
+     * @return true if the user tries to downgrade their plan, false otherwise
+     */
     private boolean downgradePlan(final String newPlan) {
         if (plan.equals("gold") && (newPlan.equals("silver") || newPlan.equals("standard") ||
                 newPlan.equals("student"))) {
@@ -116,6 +132,11 @@ public class User {
         return false;
     }
 
+    /**
+     * Private method that calculates the upgrade fee for the user's plan.
+     * @param newPlan the new plan the user wants to upgrade to
+     * @return the upgrade fee for the new plan
+     */
     private double planUpgradeFee(final String newPlan) {
         if (newPlan.equals("silver") && (plan.equals("standard") || plan.equals("student"))) {
             return 100;
@@ -129,29 +150,44 @@ public class User {
         return 0;
     }
 
+    /**
+     * Method that sets the plan strategy for the user. This uses the factory pattern to create
+     * the plan strategy based on the plan name.
+     * @param plan the plan name to set the strategy for the user
+     */
     public void setPlanStrategy(final String plan) {
-        switch (plan) {
-            case "student":
-                planStrategy = new StudentPlan();
-                break;
-            case "standard":
-                planStrategy = new StandardPlan();
-                break;
-            case "silver":
-                planStrategy = new SilverPlan();
-                break;
-            case "gold":
-                planStrategy = new GoldPlan();
-                break;
-        }
+        planStrategy = PlanFactory.getPlanStrategy(plan);
     }
 
+    /**
+     * Method that checks if the user has at least 21 years old. This is used when withdrawing money
+     * from a savings account.
+     * @return true if the user has at least 21 years old, false otherwise
+     */
     public boolean has21Years() {
+        // parse the birthdate and get the current date
         LocalDate birth = LocalDate.parse(birthDate);
         LocalDate now = LocalDate.now();
 
+        // calculate the age of the user
         Period age = Period.between(birth, now);
 
         return age.getYears() >= 21;
+    }
+
+    /**
+     * Method that adds a pending payment to the user's list of pending payments.
+     * @param splitPayment the pending payment to be added
+     */
+    public void addPendingPayment(SplitPayment splitPayment) {
+        pendingPayments.add(splitPayment);
+    }
+
+    /**
+     * Method that removes a pending payment from the user's list of pending payments.
+     * @param splitPayment the pending payment to be removed
+     */
+    public void removePendingPayment(SplitPayment splitPayment) {
+        pendingPayments.remove(splitPayment);
     }
 }
