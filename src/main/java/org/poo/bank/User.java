@@ -27,6 +27,8 @@ public class User {
     private PlanStrategy planStrategy;
     private final ArrayList<Account> accounts = new ArrayList<>();
     private final List<Transaction> transactions = new ArrayList<>();
+    private List<SplitPayment> pendingPayments = new ArrayList<>();
+
 
     public User(final UserInput userInput) {
         firstName = userInput.getFirstName();
