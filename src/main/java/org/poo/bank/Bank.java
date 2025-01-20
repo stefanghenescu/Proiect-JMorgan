@@ -144,6 +144,8 @@ public final class Bank {
             case "withdrawSavings" -> new WithdrawSavingsCommand(this, input, output);
             case "upgradePlan" -> new UpgradePlanCommand(this, input, output);
             case "cashWithdrawal" -> new CashWithdrawalCommand(this, input, output);
+            case "acceptSplitPayment" -> new AcceptSplitPaymentCommand(this, input, output);
+            case "rejectSplitPayment" -> new RejectSplitPaymentCommand(this, input, output);
             default -> null;
         };
     }
