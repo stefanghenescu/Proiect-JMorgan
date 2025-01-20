@@ -38,8 +38,6 @@ public class WithdrawSavingsCommand implements Command {
         }
 
         User user = savingsAccount.getOwner();
-        double commission = user.getCommissionStrategy()
-                .calculateCommission(command.getAmount(), bank, command.getCurrency());
 
         if (!user.has21Years()) {
             Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
@@ -58,7 +56,7 @@ public class WithdrawSavingsCommand implements Command {
 
         if (classicAccount == null) {
             Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
-                    "You do not have a classic account")
+                    "You do not have a classic account.")
                     .build();
             user.addTransaction(transaction);
             savingsAccount.addTransaction(transaction);
@@ -67,10 +65,10 @@ public class WithdrawSavingsCommand implements Command {
 
         double exchangeRate = bank.getExchangeRates().getRate(command.getCurrency(),
                                                                 savingsAccount.getCurrency());
-        double amountWithdraw = savingsAccount.withdraw((command.getAmount() + commission) *
+        double amountWithdraw = savingsAccount.withdraw(command.getAmount() *
                                                                 exchangeRate);
 
-        if (amountWithdraw == 0) {
+        if (amountWithdraw == 0 && command.getAmount() != 0) {
             Transaction transaction = new Transaction.TransactionBuilder(command.getTimestamp(),
                     "Insufficient funds")
                     .build();
