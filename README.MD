@@ -1,5 +1,5 @@
-# Proiect Etapa 2 - J. POO Morgan Chase & Co.
-### Ghenescu Stefan 322CA
+# Proiect - J. POO Morgan Chase & Co.
+### Ghenescu Stefan
 
 ## Overview
 
